@@ -49,7 +49,7 @@ class AlexaInput implements VoiceInput {
       if (!(metadata instanceof Map<?,?>)) {
         throw new IllegalArgumentException("Second argument is not an instance of Map<?,?>: " + metadata);
       }
-      this.metadata = (HashMap<String, Object>) metadata;
+      this.metadata = (Map<String, Object>) metadata;
     }
   }
 
