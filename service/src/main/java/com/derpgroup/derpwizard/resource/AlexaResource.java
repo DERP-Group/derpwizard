@@ -30,13 +30,17 @@ import javax.ws.rs.core.MediaType;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
+import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletRequest;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.SimpleCard;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.derpgroup.derpwizard.configuration.MainConfig;
+import com.derpgroup.derpwizard.manager.DerpWizardManager;
 import com.derpgroup.derpwizard.voice.alexa.AlexaRequestType;
 import com.derpgroup.derpwizard.voice.alexa.AlexaSkillsKitUtil;
+import com.derpgroup.derpwizard.voice.model.VoiceInput;
+import com.derpgroup.derpwizard.voice.model.VoiceMessageFactory;
 
 /**
  * REST APIs for requests generating from Amazon Alexa
@@ -49,7 +53,11 @@ import com.derpgroup.derpwizard.voice.alexa.AlexaSkillsKitUtil;
 @Consumes(MediaType.APPLICATION_JSON)
 public class AlexaResource {
 
-  public AlexaResource(MainConfig config, Environment env) {}
+  private DerpWizardManager manager;
+  
+  public AlexaResource(MainConfig config, Environment env) {
+    manager = new DerpWizardManager();
+  }
 
   /**
    * Generates a welcome message.
@@ -66,17 +74,18 @@ public class AlexaResource {
     
     switch(requestType){
     case LAUNCH_REQUEST:
-      return doLaunchRequest(request);
+      return doLaunchRequest(request.getRequest(), request.getSession());
     case INTENT_REQUEST:
-      return doIntentRequest(request);
+      return doIntentRequest(request.getRequest(), request.getSession());
     case SESSION_ENDED_REQUEST:
-      return doSessionEndedRequest(request);
+      return doSessionEndedRequest(request.getRequest(), request.getSession());
       default: 
         throw new RuntimeException("Unknown request type."); //TODO: create AlexaException
     }
   }
   
-  protected SpeechletResponseEnvelope doLaunchRequest(SpeechletRequestEnvelope request){
+  protected SpeechletResponseEnvelope doLaunchRequest(SpeechletRequest request, Session session){
+    //TODO: Decide whether it makes sense to cast LaunchRequest into an IntentRequest with type "HELLO"
     SpeechletResponseEnvelope response = new SpeechletResponseEnvelope();
     response.setVersion(AlexaResource.class.getPackage().getImplementationVersion());
     
@@ -91,18 +100,22 @@ public class AlexaResource {
     sr.setOutputSpeech(outputSpeech);
     sr.setCard(card);
     response.setResponse(sr);
-    response.setSessionAttributes(request.getSession().getAttributes());
+    response.setSessionAttributes(session.getAttributes());
     
     return response;
   }
   
-  protected SpeechletResponseEnvelope doIntentRequest(SpeechletRequestEnvelope request){
+  protected SpeechletResponseEnvelope doIntentRequest(SpeechletRequest request, Session session){
+    VoiceInput vi = VoiceMessageFactory.buildInputMessageWithMetadata(request, session.getAttributes(), VoiceMessageFactory.InterfaceType.ALEXA);
+    String output = manager.handleRequest(vi);    
+    
     SpeechletResponseEnvelope response = new SpeechletResponseEnvelope();
     response.setVersion(AlexaResource.class.getPackage().getImplementationVersion());
     
     SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-    outputSpeech.setSsml("<speak><p><s>Hi. This is Alexa, speaking on behalf of DerpWizard.</s></p></speak>");
+    outputSpeech.setSsml(output);
     
+    //Card text is not currently part of what the manager outputs, so hardcoding it
     SimpleCard card = new SimpleCard();
     card.setContent("Hi. This is Alexa, speaking on behalf of DerpWizard.");
     card.setTitle("Alexa + DERPWizard");
@@ -111,16 +124,16 @@ public class AlexaResource {
     sr.setOutputSpeech(outputSpeech);
     sr.setCard(card);
     response.setResponse(sr);
-    response.setSessionAttributes(request.getSession().getAttributes());
+    response.setSessionAttributes(session.getAttributes());
     return response;
   }
   
-  protected SpeechletResponseEnvelope doSessionEndedRequest(SpeechletRequestEnvelope request){
+  protected SpeechletResponseEnvelope doSessionEndedRequest(SpeechletRequest request, Session session){
     SpeechletResponseEnvelope response = new SpeechletResponseEnvelope();
     response.setVersion(AlexaResource.class.getPackage().getImplementationVersion());
     SpeechletResponse sr = new SpeechletResponse();
     response.setResponse(sr);
-    response.setSessionAttributes(request.getSession().getAttributes());
+    response.setSessionAttributes(session.getAttributes());
     return response;
   }
 }

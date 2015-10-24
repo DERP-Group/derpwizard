@@ -20,6 +20,8 @@
 
 package com.derpgroup.derpwizard.voice.model;
 
+import java.util.Map;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -36,4 +38,26 @@ public interface VoiceInput {
    * @return The message in plain text, never null
    */
   @NonNull String getMessage();
+  
+  /**
+   * A map of key-value pairs sent as input along with the request
+   * 
+   * @return A map of parameters.  Can be empty, but not null
+   */
+  @NonNull Map<String,String> getParameters();
+  
+  /**
+   * Get the request name of the request
+   * 
+   * @param enumClass the enum describing possible request names
+   * @return The Enum value representation of the request name
+   */
+  @NonNull <E extends Enum<E>> E getRequestName(Class<E> enumClass);
+  
+  /**
+   * Get all pieces of metadata associated with the request
+   * 
+   * @return all associated metadata
+   */
+  Map<String,Object> getMetadata();
 }
