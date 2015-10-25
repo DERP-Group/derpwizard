@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.regex.qual.Regex;
@@ -85,6 +86,8 @@ public class SsmlDocumentBuilder {
 
   /**
    * End the current paragraph and start a new one.
+   * <br>
+   * Also ends the current sentence (if any).
    *
    * @return this, for method chaining
    */
@@ -172,26 +175,51 @@ public class SsmlDocumentBuilder {
    * @return the document, never null
    */
   public @NonNull SsmlDocument build() {
-    StringBuilder buffer = new StringBuilder("<speak>");
-    for (List<StringBuilder> paragraph : paragraphs) {
-      buffer.append("<p>");
-      for (StringBuilder sentence : paragraph) {
-        if (sentence.length() > 0) {
-          buffer.append("<s>" + sentence + "</s>");
-        }
-      }
-      buffer.append("</p>");
-    }
-    buffer.append("</speak>");
-
-    return new SsmlDocument(buffer.toString());
+    return new SsmlDocument(build(true));
   }
 
-  private final StringBuilder getSentence() {
+  /**
+   * Builds a String representing this without SSML tags.
+   *
+   * @return The raw text, never null
+   */
+  public @NonNull String getRawText() {
+    return build(false);
+  }
+
+  @Override
+  public String toString() {
+    return build(true);
+  }
+
+  private @NonNull String build(boolean includeMarkup) {
+    StringBuilder buffer = new StringBuilder(includeMarkup ? "<speak>" : "");
+
+    for (List<StringBuilder> paragraph : paragraphs) {
+      buffer.append(includeMarkup ? "<p>" : "");
+
+      for (StringBuilder sentence : paragraph) {
+        if (sentence.length() > 0) {
+          if (includeMarkup) {
+            buffer.append("<s>" + sentence + "</s>");
+          } else {
+            buffer.append(StringUtils.trimToEmpty(sentence + " "));
+          }
+        }
+      }
+
+      buffer.append(includeMarkup ? "</p>" : "");
+    }
+    buffer.append(includeMarkup ? "</speak>" : "");
+
+    return buffer.toString();
+  }
+
+  private StringBuilder getSentence() {
     return paragraphs.get(index).get(paragraphs.get(index).size() - 1);
   }
 
-  private final List<StringBuilder> buildParagraph() {
+  private List<StringBuilder> buildParagraph() {
     List<StringBuilder> paragraph = new ArrayList<StringBuilder>();
     paragraph.add(new StringBuilder());
 

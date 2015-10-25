@@ -31,33 +31,56 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 0.0.1
  */
 public interface VoiceInput {
+  /**
+   * Enumeration of types of message intents.
+   *
+   * @author Rusty
+   * @since 0.0.1
+   */
+  public enum MessageType {
+    /**
+     * User has initiated a new conversation
+     */
+    START_OF_CONVERSATION,
+    /**
+     * User has ended the current conversation
+     */
+    END_OF_CONVERSATION,
+    /**
+     * User has asked for help instructions for the system
+     */
+    HELP,
+    /**
+     * User has sent a normal message to the system
+     */
+    DEFAULT
+  }
 
   /**
    * Parse the voice input as plain text.
    *
    * @return The message in plain text, never null
    */
-  @NonNull String getMessage();
+  @NonNull String getMessageAsString();
   
   /**
-   * A map of key-value pairs sent as input along with the request
-   * 
-   * @return A map of parameters.  Can be empty, but not null
+   * Parse the voice input as a series of K-V pairs.
+   *
+   * @return A map of parameters, never null
    */
-  @NonNull Map<String,String> getParameters();
-  
-  /**
-   * Get the request name of the request
-   * 
-   * @param enumClass the enum describing possible request names
-   * @return The Enum value representation of the request name
-   */
-  @NonNull <E extends Enum<E>> E getRequestName(Class<E> enumClass);
-  
+  @NonNull Map<String, String> getMessageAsMap();
+
   /**
    * Get all pieces of metadata associated with the request
    * 
-   * @return all associated metadata
+   * @return The associated metadata, never null
    */
-  Map<String,Object> getMetadata();
+  @NonNull Map<String, Object> getMetadata();
+
+  /**
+   * 
+   *
+   * @return The intent of the message, never null
+   */
+  @NonNull MessageType getMessageType();
 }
