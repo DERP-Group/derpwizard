@@ -20,20 +20,37 @@
 
 package com.derpgroup.derpwizard.voice.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
+
+import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
 
 class AlexaInput implements VoiceInput {
   private IntentRequest request;
-
+  private Map<String,Object> metadata;
+  
   public AlexaInput(Object object) {
-    if (!(object instanceof IntentRequest)) {
-      throw new IllegalArgumentException("Argument is not an instance of IntentRequest: " + object);
+    this(object, null);
+  }
+
+  @SuppressWarnings("unchecked")
+  public AlexaInput(Object request, Object metadata) {
+    if (!(request instanceof IntentRequest)) {
+      throw new IllegalArgumentException("First argument is not an instance of IntentRequest: " + request);
     }
 
-    request = (IntentRequest) object;
+    this.request = (IntentRequest) request;
+    
+    if(metadata != null){
+      if (!(metadata instanceof Map<?,?>)) {
+        throw new IllegalArgumentException("Second argument is not an instance of Map<?,?>: " + metadata);
+      }
+      this.metadata = (Map<String, Object>) metadata;
+    }
   }
 
   @Override
@@ -49,5 +66,31 @@ class AlexaInput implements VoiceInput {
     }
 
     return buffer.toString();
+  }
+
+  @Override
+  public Map<String, String> getParameters() {
+    Map<String,String> slots = new HashMap<String,String>();
+    Intent intent = request.getIntent();
+    if(intent.getSlots() == null){
+      return slots;
+    }
+    
+    for(Entry<String,Slot> entry : intent.getSlots().entrySet()){
+      slots.put(entry.getKey(), entry.getValue().getValue());
+    }
+    
+    return slots;
+  }
+
+  //TODO: We should put some code in here to map built in AMAZON intents to other request types
+  @Override
+  public <E extends Enum<E>> E getRequestName(Class<E> enumClass) {
+    return (E)(Enum.valueOf(enumClass, request.getIntent().getName()));
+  }
+
+  @Override
+  public Map<String, Object> getMetadata() {
+    return metadata;
   }
 }
