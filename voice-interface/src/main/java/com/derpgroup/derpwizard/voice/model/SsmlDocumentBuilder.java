@@ -191,7 +191,7 @@ public class SsmlDocumentBuilder {
    * @return the document, never null
    */
   public @NonNull SsmlDocument build() {
-    return new SsmlDocument(build(true));
+    return new SsmlDocument(buildString());
   }
 
   /**
@@ -200,33 +200,42 @@ public class SsmlDocumentBuilder {
    * @return The raw text, never null
    */
   public @NonNull String getRawText() {
-    return build(false);
+    String result = buildString();
+
+    // Remove SSML tags
+    result = result.replaceAll("</?speak>", "");
+    result = result.replaceAll("</?p>", "");
+    result = result.replaceAll("</?s>", "");
+    result = result.replaceAll("<break.*?/>", "");
+    result = result.replaceAll("</?emphasis.*?>", "");
+
+    return result;
   }
 
   @Override
   public String toString() {
-    return build(true);
+    return buildString();
   }
 
-  private @NonNull String build(boolean includeMarkup) {
-    StringBuilder buffer = new StringBuilder(includeMarkup && !ignoreTags.contains("speak") ? "<speak>" : "");
+  private @NonNull String buildString() {
+    StringBuilder buffer = new StringBuilder(ignoreTags.contains("speak") ? "" : "<speak>");
 
     for (List<StringBuilder> paragraph : paragraphs) {
-      buffer.append(includeMarkup && !ignoreTags.contains("p") ? "<p>" : "");
+      buffer.append(ignoreTags.contains("p") ? "" : "<p>");
 
       for (StringBuilder sentence : paragraph) {
         if (sentence.length() > 0) {
-          if (includeMarkup && !ignoreTags.contains("s")) {
-            buffer.append("<s>" + sentence + "</s>");
-          } else {
+          if (ignoreTags.contains("s")) {
             buffer.append(StringUtils.trimToEmpty(sentence + " "));
+          } else {
+            buffer.append("<s>" + sentence + "</s>");
           }
         }
       }
 
-      buffer.append(includeMarkup && !ignoreTags.contains("p") ? "</p>" : "");
+      buffer.append(ignoreTags.contains("p") ? "" : "</p>");
     }
-    buffer.append(includeMarkup && !ignoreTags.contains("speak") ? "</speak>" : "");
+    buffer.append(ignoreTags.contains("speak") ? "" : "</speak>");
 
     return buffer.toString();
   }

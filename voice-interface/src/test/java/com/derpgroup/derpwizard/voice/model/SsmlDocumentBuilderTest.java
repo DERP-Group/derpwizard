@@ -111,4 +111,11 @@ public class SsmlDocumentBuilderTest {
 
     assertEquals("<speak><p><s>Hello, world.</s></p></speak>", doc.getSsml());
   }
+
+  @Test
+  public void getRawTextSuccess() throws Exception {
+    String result = builder.text("w1 ").text("w2", EmphasisLevel.STRONG).text(" w3").pause(null, null).text(" w4").pause(BreakStrength.STRONG, "500ms").getRawText();
+
+    assertEquals("w1 w2 w3 w4", result);
+  }
 }
