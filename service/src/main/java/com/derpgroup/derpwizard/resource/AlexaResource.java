@@ -20,6 +20,10 @@
 
 package com.derpgroup.derpwizard.resource;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import io.dropwizard.setup.Environment;
 
 import javax.validation.Valid;
@@ -55,6 +59,10 @@ import com.derpgroup.derpwizard.voice.model.VoiceOutput;
 @Consumes(MediaType.APPLICATION_JSON)
 public class AlexaResource {
 
+  private static final List<String> UNSUPPORTED_SSML_TAGS = Collections.unmodifiableList(Arrays.asList(
+      "emphasis"
+      ));
+
   private DerpWizardManager manager;
 
   public AlexaResource(MainConfig config, Environment env) {
@@ -72,7 +80,7 @@ public class AlexaResource {
       throw new RuntimeException("Missing request body."); //TODO: create AlexaException
     }
 
-    SsmlDocumentBuilder builder = new SsmlDocumentBuilder();
+    SsmlDocumentBuilder builder = new SsmlDocumentBuilder(UNSUPPORTED_SSML_TAGS);
     VoiceInput voiceInput = VoiceMessageFactory.buildInputMessage(request.getRequest(), InterfaceType.ALEXA);
     manager.handleRequest(voiceInput, builder);
 

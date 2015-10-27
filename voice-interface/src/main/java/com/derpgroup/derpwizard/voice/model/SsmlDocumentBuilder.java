@@ -21,8 +21,11 @@
 package com.derpgroup.derpwizard.voice.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -39,7 +42,7 @@ import org.checkerframework.checker.regex.qual.Regex;
 public class SsmlDocumentBuilder {
   /**
    * Regular expression pattern for time designations.
-   * <p>
+   *
    * @see <a href="http://www.w3.org/TR/speech-synthesis11/#def_time_designation">http://www.w3.org/TR/speech-synthesis11/#def_time_designation</a>
    */
   @Regex private static final String TIME_PATTERN = "^\\+?[0-9]*\\.?[0-9]+m?s$";
@@ -76,17 +79,26 @@ public class SsmlDocumentBuilder {
     }
   }
 
+  private Set<String> ignoreTags;
   private List<List<StringBuilder>> paragraphs;
   private int index = 0;
 
   public SsmlDocumentBuilder() {
+    this(Collections.emptyList());
+  }
+
+  /**
+   * @param ignoreTags
+   *          A list of SSML tags to ignore while building, not null
+   */
+  public SsmlDocumentBuilder(@NonNull List<String> ignoreTags) {
+    this.ignoreTags = Collections.unmodifiableSet(new HashSet<String>(ignoreTags));
     paragraphs = new ArrayList<List<StringBuilder>>();
     paragraphs.add(buildParagraph());
   }
 
   /**
-   * End the current paragraph and start a new one.
-   * <br>
+   * End the current paragraph and start a new one.<br>
    * Also ends the current sentence (if any).
    *
    * @return this, for method chaining
@@ -123,7 +135,7 @@ public class SsmlDocumentBuilder {
    * @return this, for method chaining
    */
   public @NonNull SsmlDocumentBuilder text(@NonNull String words, @Nullable EmphasisLevel emphasis) {
-    if (emphasis == null) {
+    if (emphasis == null || ignoreTags.contains("emphasis")) {
       return text(words);
     }
 
@@ -143,6 +155,10 @@ public class SsmlDocumentBuilder {
    * @see #TIME_PATTERN
    */
   public @NonNull SsmlDocumentBuilder pause(@Nullable BreakStrength type, @Nullable String time) {
+    if (ignoreTags.contains("break")) {
+      return this;
+    }
+
     getSentence().append("<break");
 
     if (type != null) {
@@ -193,14 +209,14 @@ public class SsmlDocumentBuilder {
   }
 
   private @NonNull String build(boolean includeMarkup) {
-    StringBuilder buffer = new StringBuilder(includeMarkup ? "<speak>" : "");
+    StringBuilder buffer = new StringBuilder(includeMarkup && !ignoreTags.contains("speak") ? "<speak>" : "");
 
     for (List<StringBuilder> paragraph : paragraphs) {
-      buffer.append(includeMarkup ? "<p>" : "");
+      buffer.append(includeMarkup && !ignoreTags.contains("p") ? "<p>" : "");
 
       for (StringBuilder sentence : paragraph) {
         if (sentence.length() > 0) {
-          if (includeMarkup) {
+          if (includeMarkup && !ignoreTags.contains("s")) {
             buffer.append("<s>" + sentence + "</s>");
           } else {
             buffer.append(StringUtils.trimToEmpty(sentence + " "));
@@ -208,9 +224,9 @@ public class SsmlDocumentBuilder {
         }
       }
 
-      buffer.append(includeMarkup ? "</p>" : "");
+      buffer.append(includeMarkup && !ignoreTags.contains("p") ? "</p>" : "");
     }
-    buffer.append(includeMarkup ? "</speak>" : "");
+    buffer.append(includeMarkup && !ignoreTags.contains("speak") ? "</speak>" : "");
 
     return buffer.toString();
   }
