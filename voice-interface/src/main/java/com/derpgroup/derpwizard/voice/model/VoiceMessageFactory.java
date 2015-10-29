@@ -27,7 +27,7 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Factory methods for building voice interface objects.
+ * Factory for building messages.
  *
  * @author Rusty
  * @since 0.0.1
@@ -79,18 +79,18 @@ public class VoiceMessageFactory {
    * @param request
    *          The request object, not null
    * @param metadata
-   *          Metadata associated with the request
+   *          The metadata associated with the request, not null
    * @param type
    *          The voice interface type that sent the request, not null
    * @return A VoiceInput wrapper, never null
    */
-  public static @NonNull VoiceInput buildInputMessageWithMetadata(@NonNull Object request, @NonNull Object metadata, @NonNull InterfaceType type) {
+  public static @NonNull VoiceInput buildInputMessage(@NonNull Object request, @NonNull Map<String, Object> metadata, @NonNull InterfaceType type) {
     if (!INPUT_MAP.containsKey(type)) {
       throw new IllegalArgumentException("Invalid type: " + type);
     }
 
     try {
-      return (VoiceInput) INPUT_MAP.get(type).getConstructor(Object.class, Object.class).newInstance(request, metadata);
+      return (VoiceInput) INPUT_MAP.get(type).getConstructor(Object.class, Map.class).newInstance(request, metadata);
     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
       throw new UnsupportedOperationException("Failed to build instance", e);
     }

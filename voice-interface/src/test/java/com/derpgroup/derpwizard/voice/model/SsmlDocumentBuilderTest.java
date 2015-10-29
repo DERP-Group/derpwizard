@@ -22,6 +22,8 @@ package com.derpgroup.derpwizard.voice.model;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.junit.Before;
 
@@ -72,5 +74,48 @@ public class SsmlDocumentBuilderTest {
     SsmlDocument doc = builder.endParagraph().text("Paragraph 1a").endSentence().text("Paragraph 1b").endParagraph().text("Paragraph 2").endParagraph().text("Paragraph 3").build();
 
     assertEquals("<speak><p><s>Paragraph 1a</s><s>Paragraph 1b</s></p><p><s>Paragraph 2</s></p><p><s>Paragraph 3</s></p></speak>", doc.getSsml());
+  }
+
+  @Test
+  public void ignoreSpeakTag() throws Exception {
+    builder = new SsmlDocumentBuilder(Arrays.asList("speak"));
+
+    SsmlDocument doc = builder.text("Hello, world!").build();
+
+    assertEquals("<p><s>Hello, world!</s></p>", doc.getSsml());
+  }
+
+  @Test
+  public void ignorePTag() throws Exception {
+    builder = new SsmlDocumentBuilder(Arrays.asList("p"));
+
+    SsmlDocument doc = builder.endParagraph().text("Line 1").endParagraph().text("Line 2").endParagraph().build();
+
+    assertEquals("<speak><s>Line 1</s><s>Line 2</s></speak>", doc.getSsml());
+  }
+
+  @Test
+  public void ignoreEmphasisTag() throws Exception {
+    builder = new SsmlDocumentBuilder(Arrays.asList("emphasis"));
+
+    SsmlDocument doc = builder.text("Hello, world!", EmphasisLevel.STRONG).build();
+
+    assertEquals("<speak><p><s>Hello, world!</s></p></speak>", doc.getSsml());
+  }
+
+  @Test
+  public void ignoreBreakTag() throws Exception {
+    builder = new SsmlDocumentBuilder(Arrays.asList("break"));
+
+    SsmlDocument doc = builder.text("Hello,").pause(BreakStrength.MEDIUM, "0.1s").text(" world.").build();
+
+    assertEquals("<speak><p><s>Hello, world.</s></p></speak>", doc.getSsml());
+  }
+
+  @Test
+  public void getRawTextSuccess() throws Exception {
+    String result = builder.text("w1 ").text("w2", EmphasisLevel.STRONG).text(" w3").pause(null, null).text(" w4").pause(BreakStrength.STRONG, "500ms").getRawText();
+
+    assertEquals("w1 w2 w3 w4", result);
   }
 }

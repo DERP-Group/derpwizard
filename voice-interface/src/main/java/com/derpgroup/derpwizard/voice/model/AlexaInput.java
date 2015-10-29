@@ -20,77 +20,81 @@
 
 package com.derpgroup.derpwizard.voice.model;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
-import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
+import com.amazon.speech.speechlet.LaunchRequest;
+import com.amazon.speech.speechlet.SessionEndedRequest;
+import com.amazon.speech.speechlet.SpeechletRequest;
 
 class AlexaInput implements VoiceInput {
-  private IntentRequest request;
-  private Map<String,Object> metadata;
-  
+  private SpeechletRequest request;
+  private Map<String, Object> metadata = Collections.emptyMap();
+
   public AlexaInput(Object object) {
     this(object, null);
   }
 
-  @SuppressWarnings("unchecked")
-  public AlexaInput(Object request, Object metadata) {
+  public AlexaInput(Object object, Map<String, Object> metadata) {
+    if (!(object instanceof SpeechletRequest)) {
+      throw new IllegalArgumentException("Argument is not an instance of SpeechletRequest: " + object);
+    }
+
+    request = (SpeechletRequest) object;
+
+    if (metadata != null) {
+      this.metadata = metadata;
+    }
+  }
+
+  @Override
+  public String getMessageSubject() {
     if (!(request instanceof IntentRequest)) {
-      throw new IllegalArgumentException("First argument is not an instance of IntentRequest: " + request);
+      return "";
     }
 
-    this.request = (IntentRequest) request;
-    
-    if(metadata != null){
-      if (!(metadata instanceof Map<?,?>)) {
-        throw new IllegalArgumentException("Second argument is not an instance of Map<?,?>: " + metadata);
+    IntentRequest intentRequest = (IntentRequest) request;
+    return intentRequest.getIntent().getName();
+  }
+
+  @Override
+  public Map<String, String> getMessageAsMap() {
+    if (!(request instanceof IntentRequest)) {
+      return Collections.emptyMap();
+    }
+
+    IntentRequest intentRequest = (IntentRequest) request;
+    Map<String, String> result = new LinkedHashMap<String, String>();
+    for (Entry<String, Slot> entry : intentRequest.getIntent().getSlots().entrySet()) {
+      Slot slot = entry.getValue();
+      if (slot != null) {
+        result.put(slot.getName(), slot.getValue());
       }
-      this.metadata = (Map<String, Object>) metadata;
     }
+
+    return result;
   }
 
   @Override
-  public String getMessage() {
-    if (request.getIntent().getSlots() == null) {
-      return request.getIntent().getName();
+  public MessageType getMessageType() {
+    if (request instanceof LaunchRequest) {
+      return MessageType.START_OF_CONVERSATION;
     }
 
-    StringBuilder buffer = new StringBuilder(request.getIntent().getName());
-    for (Entry<String, Slot> entry : request.getIntent().getSlots().entrySet()) {
-      buffer.append(' ');
-      buffer.append(entry.getValue().getValue());
+    if (request instanceof SessionEndedRequest) {
+      return MessageType.END_OF_CONVERSATION;
     }
 
-    return buffer.toString();
-  }
-
-  @Override
-  public Map<String, String> getParameters() {
-    Map<String,String> slots = new HashMap<String,String>();
-    Intent intent = request.getIntent();
-    if(intent.getSlots() == null){
-      return slots;
-    }
-    
-    for(Entry<String,Slot> entry : intent.getSlots().entrySet()){
-      slots.put(entry.getKey(), entry.getValue().getValue());
-    }
-    
-    return slots;
-  }
-
-  //TODO: We should put some code in here to map built in AMAZON intents to other request types
-  @Override
-  public <E extends Enum<E>> E getRequestName(Class<E> enumClass) {
-    return (E)(Enum.valueOf(enumClass, request.getIntent().getName()));
+    // TODO: Check the metadata to see if this is actually a HELP message
+    return MessageType.DEFAULT;
   }
 
   @Override
   public Map<String, Object> getMetadata() {
-    return metadata;
+    return Collections.unmodifiableMap(metadata);
   }
 }
