@@ -57,12 +57,13 @@ public interface VoiceInput {
   }
 
   /**
-   * Parse the voice input as plain text.
+   * Fetch the subject-matter of the voice input as determined by the NLP
+   * system.
    *
-   * @return The message in plain text, never null
+   * @return The subject of the message, never null
    */
-  @NonNull String getMessageAsString();
-  
+  @NonNull String getMessageSubject();
+
   /**
    * Parse the voice input as a series of K-V pairs.
    *
@@ -71,14 +72,14 @@ public interface VoiceInput {
   @NonNull Map<String, String> getMessageAsMap();
 
   /**
-   * Get all pieces of metadata associated with the request
+   * Get all pieces of metadata associated with the message
    * 
    * @return The associated metadata, never null
    */
   @NonNull Map<String, Object> getMetadata();
 
   /**
-   * 
+   * Get the message type with respect to a conversation flow.
    *
    * @return The intent of the message, never null
    */

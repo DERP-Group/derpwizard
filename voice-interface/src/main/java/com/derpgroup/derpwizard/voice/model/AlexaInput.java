@@ -52,7 +52,7 @@ class AlexaInput implements VoiceInput {
   }
 
   @Override
-  public String getMessageAsString() {
+  public String getMessageSubject() {
     if (!(request instanceof IntentRequest)) {
       return "";
     }
