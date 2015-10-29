@@ -22,6 +22,8 @@ package com.derpgroup.derpwizard.voice.model;
 
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -76,7 +78,7 @@ public interface VoiceInput {
    * 
    * @return The associated metadata, never null
    */
-  @NonNull Map<String, Object> getMetadata();
+  @NonNull JSONObject getMetadata();
 
   /**
    * Get the message type with respect to a conversation flow.

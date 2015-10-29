@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,9 +100,9 @@ public class AlexaInputTest {
 
   @Test
   public void constructorWithMetadata(){
-    Map<String, Object> metadata = new LinkedHashMap<String, Object>();
+    JSONObject metadata = new JSONObject();
     metadata.put("foo", "fooValue");
-    metadata.put("bar", new Integer(123));
+    metadata.put("bar", 123);
 
     VoiceInput vi = new AlexaInput(intentRequest, metadata);
     assertNotNull(vi.getMetadata());
