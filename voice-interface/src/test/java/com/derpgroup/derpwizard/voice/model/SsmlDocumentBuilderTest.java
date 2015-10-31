@@ -57,9 +57,9 @@ public class SsmlDocumentBuilderTest {
 
   @Test
   public void buildSentenceWithBreaks() throws Exception {
-    SsmlDocument doc = builder.text("w1 ").pause(null, null).text(" w2 ").pause(BreakStrength.STRONG, "500ms").text(" w3 ").pause(null, "+.1s").text(" w4 ").pause(null, "BOGUS").build();
+    SsmlDocument doc = builder.text("w1 ").pause().text(" w2 ").pause(BreakStrength.STRONG).text(" w3 ").pause("+.1s").text(" w4 ").pause("BOGUS").build();
 
-    assertEquals("<speak><p><s>w1 <break/> w2 <break strength=\"strong\" time=\"500ms\"/> w3 <break time=\"+.1s\"/> w4 <break/></s></p></speak>", doc.getSsml());
+    assertEquals("<speak><p><s>w1 <break /> w2 <break strength=\"strong\"/> w3 <break time=\"+.1s\"/> w4 <break/></s></p></speak>", doc.getSsml());
   }
 
   @Test
@@ -107,14 +107,14 @@ public class SsmlDocumentBuilderTest {
   public void ignoreBreakTag() throws Exception {
     builder = new SsmlDocumentBuilder(Arrays.asList("break"));
 
-    SsmlDocument doc = builder.text("Hello,").pause(BreakStrength.MEDIUM, "0.1s").text(" world.").build();
+    SsmlDocument doc = builder.text("Hello,").pause(BreakStrength.MEDIUM).text(" world.").build();
 
     assertEquals("<speak><p><s>Hello, world.</s></p></speak>", doc.getSsml());
   }
 
   @Test
   public void getRawTextSuccess() throws Exception {
-    String result = builder.text("w1 ").text("w2", EmphasisLevel.STRONG).text(" w3").pause(null, null).text(" w4").pause(BreakStrength.STRONG, "500ms").getRawText();
+    String result = builder.text("w1 ").text("w2", EmphasisLevel.STRONG).text(" w3").pause().text(" w4").pause(BreakStrength.STRONG).pause("500ms").getRawText();
 
     assertEquals("w1 w2 w3 w4", result);
   }

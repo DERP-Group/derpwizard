@@ -145,16 +145,28 @@ public class SsmlDocumentBuilder {
   }
 
   /**
+   * Add a medium break element to the current sentence.
+   *
+   * @return this, for method chaining
+   */
+  public @NonNull SsmlDocumentBuilder pause() {
+    if (ignoreTags.contains("break")) {
+      return this;
+    }
+
+    getSentence().append("<break />");
+
+    return this;
+  }
+
+  /**
    * Add a break element to the current sentence.
    *
    * @param type
    *          The type of pause, nullable
-   * @param time
-   *          The length of time to pause, nullable
    * @return this, for method chaining
-   * @see #TIME_PATTERN
    */
-  public @NonNull SsmlDocumentBuilder pause(@Nullable BreakStrength type, @Nullable String time) {
+  public @NonNull SsmlDocumentBuilder pause(@NonNull BreakStrength type) {
     if (ignoreTags.contains("break")) {
       return this;
     }
@@ -164,6 +176,26 @@ public class SsmlDocumentBuilder {
     if (type != null) {
       getSentence().append(" strength=\"" + type + "\"");
     }
+
+    getSentence().append("/>");
+
+    return this;
+  }
+
+  /**
+   * Add a break element to the current sentence.
+   *
+   * @param time
+   *          The length of time to pause, nullable
+   * @return this, for method chaining
+   * @see #TIME_PATTERN
+   */
+  public @NonNull SsmlDocumentBuilder pause(@NonNull String time) {
+    if (ignoreTags.contains("break")) {
+      return this;
+    }
+
+    getSentence().append("<break");
 
     if (time != null && time.matches(TIME_PATTERN)) {
       getSentence().append(" time=\"" + time + "\"");
