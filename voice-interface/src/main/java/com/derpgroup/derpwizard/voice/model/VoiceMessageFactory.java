@@ -113,7 +113,9 @@ public class VoiceMessageFactory {
     }
 
     try {
-      return (VoiceOutput<?>) OUTPUT_MAP.get(type).newInstance();
+      VoiceOutput<?> voiceOutput = (VoiceOutput<?>) OUTPUT_MAP.get(type).newInstance();
+      voiceOutput.setMessage(document);
+      return voiceOutput;
     } catch (InstantiationException | IllegalAccessException e) {
       throw new UnsupportedOperationException("Failed to build instance", e);
     }
