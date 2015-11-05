@@ -38,6 +38,7 @@ import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.SimpleCard;
+import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.derpgroup.derpwizard.configuration.MainConfig;
 import com.derpgroup.derpwizard.manager.DerpWizardManager;
 import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
@@ -94,10 +95,11 @@ public class AlexaResource {
       card.setTitle("Alexa + DERP Wizard");
 
       @SuppressWarnings("unchecked")
-      VoiceOutput<SpeechletResponse> voiceOutput = (VoiceOutput<SpeechletResponse>) VoiceMessageFactory.buildOutputMessage(builder.build(), InterfaceType.ALEXA);
-      SpeechletResponse speechletResponse = (SpeechletResponse) voiceOutput.getImplInstance();
+      VoiceOutput<SsmlOutputSpeech> voiceOutput = (VoiceOutput<SsmlOutputSpeech>) VoiceMessageFactory.buildOutputMessage(builder.build(), InterfaceType.ALEXA);
+      SpeechletResponse speechletResponse = new SpeechletResponse();
+      SsmlOutputSpeech outputSpeech = (SsmlOutputSpeech) voiceOutput.getImplInstance();
+      speechletResponse.setOutputSpeech(outputSpeech);
       speechletResponse.setCard(card);
-
       responseEnvelope.setResponse(speechletResponse);
     }
 
