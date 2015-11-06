@@ -52,6 +52,12 @@ public abstract class AbstractManager {
       case HELP:
         doHelpRequest(voiceInput, builder);
         break;
+      case CANCEL:
+        doCancelRequest(voiceInput, builder);
+        break;
+      case STOP:
+        doStopRequest(voiceInput, builder);
+        break;
       case DEFAULT:
       default:
         doConversationRequest(voiceInput, builder);
@@ -63,6 +69,10 @@ public abstract class AbstractManager {
   protected abstract void doHelloRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
 
   protected abstract void doGoodbyeRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
+
+  protected abstract void doCancelRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
+
+  protected abstract void doStopRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
 
   protected abstract void doConversationRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
 }

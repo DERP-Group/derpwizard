@@ -53,6 +53,14 @@ public interface VoiceInput {
      */
     HELP,
     /**
+     * User wants to either exit the state their in, or more likely exit the conversation
+     */
+    STOP,
+    /**
+     * User would like to undo the 
+     */
+    CANCEL,
+    /**
      * User has sent a normal message to the system
      */
     DEFAULT
