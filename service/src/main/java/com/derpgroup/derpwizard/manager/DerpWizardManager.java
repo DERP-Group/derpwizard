@@ -52,4 +52,12 @@ public class DerpWizardManager extends AbstractManager {
   protected void doConversationRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) {
     builder.endParagraph().text("I'd love to help, but I'm not programmed to have conversations yet.").endParagraph();
   }
+
+  @Override
+  protected void doCancelRequest(VoiceInput voiceInput,
+      SsmlDocumentBuilder builder) {}
+
+  @Override
+  protected void doStopRequest(VoiceInput voiceInput,
+      SsmlDocumentBuilder builder) {}
 }

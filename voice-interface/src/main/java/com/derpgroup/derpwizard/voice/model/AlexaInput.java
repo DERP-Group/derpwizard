@@ -91,7 +91,18 @@ class AlexaInput implements VoiceInput {
       return MessageType.END_OF_CONVERSATION;
     }
 
-    // TODO: Check the metadata to see if this is actually a HELP message
+    if(getMessageSubject().equalsIgnoreCase("HELP") || getMessageSubject().equalsIgnoreCase("AMAZON.HelpIntent")){
+      return MessageType.HELP;
+    }
+    
+    if(getMessageSubject().equalsIgnoreCase("CANCEL") || getMessageSubject().equalsIgnoreCase("AMAZON.CancelIntent")){
+      return MessageType.CANCEL;
+    }
+    
+    if(getMessageSubject().equalsIgnoreCase("STOP") || getMessageSubject().equalsIgnoreCase("AMAZON.StopIntent")){
+      return MessageType.STOP;
+    }
+    
     return MessageType.DEFAULT;
   }
 
