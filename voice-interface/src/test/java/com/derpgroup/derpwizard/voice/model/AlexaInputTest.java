@@ -104,15 +104,10 @@ public class AlexaInputTest {
     CommonMetadata metadata = new CommonMetadata();
     Map<String, Object> conversationHistory = new HashMap<String,Object>();
     metadata.setConversationHistory(conversationHistory);
-    //JSONObject metadata = new JSONObject();
-    //metadata.put("foo", "fooValue");
-    //metadata.put("bar", 123);
 
     VoiceInput vi = new AlexaInput(intentRequest, metadata);
     assertNotNull(vi.getMetadata());
     assertNotNull(vi.getMetadata().getConversationHistory());
-    //assertNotNull(vi.getMetadata().get("bar"));
-    //assertEquals(vi.getMetadata().get("foo"),metadata.get("foo"));
     assertEquals(conversationHistory,vi.getMetadata().getConversationHistory());
   }
 
