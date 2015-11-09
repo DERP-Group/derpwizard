@@ -25,8 +25,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.sf.json.JSONObject;
-
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
@@ -35,13 +33,13 @@ import com.amazon.speech.speechlet.SpeechletRequest;
 
 class AlexaInput implements VoiceInput {
   private SpeechletRequest request;
-  private JSONObject metadata = new JSONObject();
+  private CommonMetadata metadata = new CommonMetadata();
 
   public AlexaInput(Object object) {
     this(object, null);
   }
 
-  public AlexaInput(Object object, JSONObject metadata) {
+  public AlexaInput(Object object, CommonMetadata metadata) {
     if (!(object instanceof SpeechletRequest)) {
       throw new IllegalArgumentException("Argument is not an instance of SpeechletRequest: " + object);
     }
@@ -107,7 +105,7 @@ class AlexaInput implements VoiceInput {
   }
 
   @Override
-  public JSONObject getMetadata() {
+  public CommonMetadata getMetadata() {
     return metadata;
   }
 }

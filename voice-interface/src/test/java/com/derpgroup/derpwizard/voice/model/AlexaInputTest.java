@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -100,16 +101,19 @@ public class AlexaInputTest {
 
   @Test
   public void constructorWithMetadata(){
-    JSONObject metadata = new JSONObject();
-    metadata.put("foo", "fooValue");
-    metadata.put("bar", 123);
+    CommonMetadata metadata = new CommonMetadata();
+    Map<String, Object> conversationHistory = new HashMap<String,Object>();
+    metadata.setConversationHistory(conversationHistory);
+    //JSONObject metadata = new JSONObject();
+    //metadata.put("foo", "fooValue");
+    //metadata.put("bar", 123);
 
     VoiceInput vi = new AlexaInput(intentRequest, metadata);
     assertNotNull(vi.getMetadata());
-    assertNotNull(vi.getMetadata().get("foo"));
-    assertNotNull(vi.getMetadata().get("bar"));
-    assertEquals(vi.getMetadata().get("foo"),metadata.get("foo"));
-    assertEquals(vi.getMetadata().get("bar"),metadata.get("bar"));
+    assertNotNull(vi.getMetadata().getConversationHistory());
+    //assertNotNull(vi.getMetadata().get("bar"));
+    //assertEquals(vi.getMetadata().get("foo"),metadata.get("foo"));
+    assertEquals(conversationHistory,vi.getMetadata().getConversationHistory());
   }
 
   @Test
