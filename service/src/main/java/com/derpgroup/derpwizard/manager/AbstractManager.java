@@ -22,6 +22,7 @@ package com.derpgroup.derpwizard.manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -93,13 +94,12 @@ public abstract class AbstractManager {
       mapper.registerModule(mapperModule);
       String metadataString = mapper.writeValueAsString(metadata);
       metadataClone = mapper.readValue(metadataString, CommonMetadata.class);
-      metadataClone.setConversationHistory(null);
     } catch (IOException e) {
       e.printStackTrace();
     }
     
     ConversationHistoryEntry entry = new ConversationHistoryEntry();
-    entry.setMessageMap(voiceInput.getMessageAsMap());
+    entry.setMessageMap(new LinkedHashMap<String,String>(voiceInput.getMessageAsMap()));
     entry.setMessageSubject(voiceInput.getMessageSubject());
     entry.setMetadata(metadataClone);
     
