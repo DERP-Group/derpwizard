@@ -86,7 +86,7 @@ public interface VoiceInput {
    * 
    * @return The associated metadata, never null
    */
-  @NonNull JSONObject getMetadata();
+  @NonNull CommonMetadata getMetadata();
 
   /**
    * Get the message type with respect to a conversation flow.

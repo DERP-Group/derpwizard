@@ -86,13 +86,13 @@ public class VoiceMessageFactory {
    *          The voice interface type that sent the request, not null
    * @return A VoiceInput wrapper, never null
    */
-  public static @NonNull VoiceInput buildInputMessage(@NonNull Object request, @NonNull JSONObject metadata, @NonNull InterfaceType type) {
+  public static @NonNull VoiceInput buildInputMessage(@NonNull Object request, @NonNull CommonMetadata metadata, @NonNull InterfaceType type) {
     if (!INPUT_MAP.containsKey(type)) {
       throw new IllegalArgumentException("Invalid type: " + type);
     }
 
     try {
-      return (VoiceInput) INPUT_MAP.get(type).getConstructor(Object.class, JSONObject.class).newInstance(request, metadata);
+      return (VoiceInput) INPUT_MAP.get(type).getConstructor(Object.class, CommonMetadata.class).newInstance(request, metadata);
     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
       throw new UnsupportedOperationException("Failed to build instance", e);
     }

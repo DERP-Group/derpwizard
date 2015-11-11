@@ -82,6 +82,7 @@ public class SsmlDocumentBuilder {
   private Set<String> ignoreTags;
   private List<List<StringBuilder>> paragraphs;
   private int index = 0;
+  private boolean conversationEnd = true;
 
   public SsmlDocumentBuilder() {
     this(Collections.emptyList());
@@ -247,6 +248,15 @@ public class SsmlDocumentBuilder {
   @Override
   public String toString() {
     return buildString();
+  }
+
+  public boolean isConversationEnd() {
+    return conversationEnd;
+  }
+
+  public SsmlDocumentBuilder conversationEnd(boolean conversationEnd) {
+    this.conversationEnd = conversationEnd;
+    return this;
   }
 
   private @NonNull String buildString() {
