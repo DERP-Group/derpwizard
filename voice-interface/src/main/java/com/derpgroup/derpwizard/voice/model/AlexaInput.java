@@ -31,7 +31,7 @@ import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.SessionEndedRequest;
 import com.amazon.speech.speechlet.SpeechletRequest;
 
-class AlexaInput implements VoiceInput {
+public class AlexaInput implements VoiceInput {
   private SpeechletRequest request;
   private CommonMetadata metadata = new CommonMetadata();
 

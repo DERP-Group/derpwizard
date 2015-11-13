@@ -1,9 +1,17 @@
 package com.derpgroup.derpwizard.voice.util;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.ConversationHistoryEntry;
+import com.derpgroup.derpwizard.voice.model.VoiceInput;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ConversationHistoryUtils {
 
@@ -16,5 +24,23 @@ public class ConversationHistoryUtils {
     }
     
     return null; //Should this return null?
+  }
+  
+  //Should this operate on the object directly, or return something?
+  public static void appendToConversationHistory(@NonNull VoiceInput voiceInput, CommonMetadata metadata, ObjectMapper mapper) {
+    Deque<ConversationHistoryEntry> conversationHistory = metadata.getConversationHistory();
+    if(conversationHistory == null){
+      conversationHistory = new ArrayDeque<ConversationHistoryEntry>();
+    }
+    
+    CommonMetadata metadataClone = mapper.convertValue(metadata, new TypeReference<CommonMetadata>(){});
+    
+    ConversationHistoryEntry entry = new ConversationHistoryEntry();
+    entry.setMessageMap(new LinkedHashMap<String,String>(voiceInput.getMessageAsMap()));
+    entry.setMessageSubject(voiceInput.getMessageSubject());
+    entry.setMetadata(metadataClone);
+    
+    conversationHistory.push(entry);
+    metadata.setConversationHistory(conversationHistory); //this is only needed in case it was null coming in
   }
 }
