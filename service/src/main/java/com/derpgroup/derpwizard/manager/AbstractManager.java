@@ -21,9 +21,12 @@
 package com.derpgroup.derpwizard.manager;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Stack;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -84,9 +87,9 @@ public abstract class AbstractManager {
 
   private void appendToConversationHistory(@NonNull VoiceInput voiceInput) {
     CommonMetadata metadata = voiceInput.getMetadata();
-    List<ConversationHistoryEntry> conversationHistory = metadata.getConversationHistory();
+    Deque<ConversationHistoryEntry> conversationHistory = metadata.getConversationHistory();
     if(conversationHistory == null){
-      conversationHistory = new ArrayList<ConversationHistoryEntry>();
+      conversationHistory = new ArrayDeque<ConversationHistoryEntry>();
     }
     CommonMetadata metadataClone = null;
     try {
@@ -103,7 +106,7 @@ public abstract class AbstractManager {
     entry.setMessageSubject(voiceInput.getMessageSubject());
     entry.setMetadata(metadataClone);
     
-    conversationHistory.add(entry);
+    conversationHistory.push(entry);
     metadata.setConversationHistory(conversationHistory); //this is only needed in case it was null coming in
   }
 
