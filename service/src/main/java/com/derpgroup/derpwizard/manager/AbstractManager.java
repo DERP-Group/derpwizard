@@ -20,13 +20,9 @@
 
 package com.derpgroup.derpwizard.manager;
 
-import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Stack;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -34,7 +30,7 @@ import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.ConversationHistoryEntry;
 import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
 import com.derpgroup.derpwizard.voice.model.VoiceInput;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -91,15 +87,10 @@ public abstract class AbstractManager {
     if(conversationHistory == null){
       conversationHistory = new ArrayDeque<ConversationHistoryEntry>();
     }
-    CommonMetadata metadataClone = null;
-    try {
-      ObjectMapper mapper = new ObjectMapper();
-      mapper.registerModule(mapperModule);
-      String metadataString = mapper.writeValueAsString(metadata);
-      metadataClone = mapper.readValue(metadataString, CommonMetadata.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(mapperModule);
+    CommonMetadata metadataClone = mapper.convertValue(metadata, new TypeReference<CommonMetadata>(){});
     
     ConversationHistoryEntry entry = new ConversationHistoryEntry();
     entry.setMessageMap(new LinkedHashMap<String,String>(voiceInput.getMessageAsMap()));

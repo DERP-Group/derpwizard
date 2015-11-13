@@ -22,8 +22,6 @@ package com.derpgroup.derpwizard.voice.model;
 
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
