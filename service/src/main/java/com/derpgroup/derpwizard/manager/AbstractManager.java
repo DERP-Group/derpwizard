@@ -20,10 +20,20 @@
 
 package com.derpgroup.derpwizard.manager;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import com.derpgroup.derpwizard.voice.model.CommonMetadata;
+import com.derpgroup.derpwizard.voice.model.ConversationHistoryEntry;
 import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
 import com.derpgroup.derpwizard.voice.model.VoiceInput;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
  * Base class for message dispatchers.
@@ -32,7 +42,13 @@ import com.derpgroup.derpwizard.voice.model.VoiceInput;
  * @since 0.0.1
  */
 public abstract class AbstractManager {
+  
+  protected Module mapperModule;
 
+  public AbstractManager(){
+    mapperModule = new SimpleModule();
+  }
+  
   /**
    * Message dispatcher.
    *
@@ -42,6 +58,7 @@ public abstract class AbstractManager {
    *          The document builder to append messages to, not null
    */
   public void handleRequest(@NonNull VoiceInput voiceInput, @NonNull SsmlDocumentBuilder builder) {
+    appendToConversationHistory(voiceInput);
     switch (voiceInput.getMessageType()) {
       case START_OF_CONVERSATION:
         doHelloRequest(voiceInput, builder);
@@ -64,6 +81,26 @@ public abstract class AbstractManager {
     }
   }
 
+  private void appendToConversationHistory(@NonNull VoiceInput voiceInput) {
+    CommonMetadata metadata = voiceInput.getMetadata();
+    List<ConversationHistoryEntry> conversationHistory = metadata.getConversationHistory();
+    if(conversationHistory == null){
+      conversationHistory = new ArrayList<ConversationHistoryEntry>();
+    }
+
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(mapperModule);
+    CommonMetadata metadataClone = mapper.convertValue(metadata, new TypeReference<CommonMetadata>(){});
+    
+    ConversationHistoryEntry entry = new ConversationHistoryEntry();
+    entry.setMessageMap(new LinkedHashMap<String,String>(voiceInput.getMessageAsMap()));
+    entry.setMessageSubject(voiceInput.getMessageSubject());
+    entry.setMetadata(metadataClone);
+    
+    conversationHistory.add(entry);
+    metadata.setConversationHistory(conversationHistory); //this is only needed in case it was null coming in
+  }
+
   protected abstract void doHelpRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
 
   protected abstract void doHelloRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
@@ -75,4 +112,5 @@ public abstract class AbstractManager {
   protected abstract void doStopRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
 
   protected abstract void doConversationRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
+  
 }

@@ -1,16 +1,16 @@
 package com.derpgroup.derpwizard.voice.model;
 
-import java.util.Map;
+import java.util.List;
 
 public class CommonMetadata {
 
-  private Map<String,Object> conversationHistory;
+  private List<ConversationHistoryEntry> conversationHistory;
 
-  public Map<String, Object> getConversationHistory() {
+  public List<ConversationHistoryEntry> getConversationHistory() {
     return conversationHistory;
   }
 
-  public void setConversationHistory(Map<String, Object> conversationHistory) {
+  public void setConversationHistory(List<ConversationHistoryEntry> conversationHistory) {
     this.conversationHistory = conversationHistory;
   }
 }

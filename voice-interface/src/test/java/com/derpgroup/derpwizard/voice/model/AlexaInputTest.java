@@ -24,12 +24,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-
-import net.sf.json.JSONObject;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -102,7 +101,9 @@ public class AlexaInputTest {
   @Test
   public void constructorWithMetadata(){
     CommonMetadata metadata = new CommonMetadata();
-    Map<String, Object> conversationHistory = new HashMap<String,Object>();
+    ConversationHistoryEntry conversationHistoryEntry = new ConversationHistoryEntry();
+    List<ConversationHistoryEntry> conversationHistory = new ArrayList<ConversationHistoryEntry>();
+    conversationHistory.add(conversationHistoryEntry);
     metadata.setConversationHistory(conversationHistory);
 
     VoiceInput vi = new AlexaInput(intentRequest, metadata);

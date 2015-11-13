@@ -24,8 +24,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
