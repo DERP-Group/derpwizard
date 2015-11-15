@@ -45,6 +45,7 @@ import com.amazon.speech.ui.SimpleCard;
 import com.derpgroup.derpwizard.configuration.MainConfig;
 import com.derpgroup.derpwizard.manager.DerpWizardManager;
 import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
+import com.derpgroup.derpwizard.voice.exception.DerpwizardException.DerpwizardExceptionReasons;
 import com.derpgroup.derpwizard.voice.exception.DerpwizardExceptionAlexaWrapper;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
@@ -92,7 +93,7 @@ public class AlexaResource {
     CommonMetadata metadata = null;
     try{
       if (request.getRequest() == null) {
-        throw new DerpwizardException("Missing request body."); //TODO: create AlexaException
+        throw new DerpwizardException(DerpwizardExceptionReasons.MISSING_INFO.getSsml(),"Missing request body."); //TODO: create AlexaException
       }
       
       Map<String, Object> sessionAttributes = request.getSession().getAttributes();

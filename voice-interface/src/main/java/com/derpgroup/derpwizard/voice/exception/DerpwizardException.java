@@ -38,4 +38,18 @@ public class DerpwizardException extends Exception {
   public void setShortFormTextMessage(String shortFormTextMessage) {
     this.shortFormTextMessage = shortFormTextMessage;
   }
+  
+  public enum DerpwizardExceptionReasons{
+    MISSING_INFO("<speak>I couldn't complete the request because some info was missing.</speak>");
+    
+    private String ssml;
+    
+    private DerpwizardExceptionReasons(String ssml){
+      this.ssml = ssml;
+    }
+    
+    public String getSsml(){
+      return ssml;
+    }
+  }
 }
