@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotNull;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.IntentRequest;
+import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
 import com.derpgroup.derpwizard.voice.model.AlexaInput;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.ConversationHistoryEntry;
@@ -28,7 +29,7 @@ public class ConversationHistoryUtilsTest {
   }
   
   @Test
-  public void testAppendToConversationHistory_firstEntry() throws IOException{
+  public void testAppendToConversationHistory_firstEntry() throws DerpwizardException{
     
     IntentRequest intentRequest = IntentRequest.builder().withRequestId("123").withIntent(Intent.builder().withName("testSubject").build()).build();
     AlexaInput alexaInput = new AlexaInput(intentRequest);
@@ -43,7 +44,7 @@ public class ConversationHistoryUtilsTest {
   }
   
   @Test
-  public void testAppendToConversationHistory_existingEntry() throws IOException{
+  public void testAppendToConversationHistory_existingEntry() throws DerpwizardException{
     CommonMetadata commonMetadata = new CommonMetadata();
     ConversationHistoryEntry entry = new ConversationHistoryEntry();
     entry.setMessageSubject("testSubject1");

@@ -41,6 +41,7 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.SimpleCard;
 import com.derpgroup.derpwizard.configuration.MainConfig;
 import com.derpgroup.derpwizard.manager.DerpWizardManager;
+import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
 import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
 import com.derpgroup.derpwizard.voice.model.VoiceInput;
 import com.derpgroup.derpwizard.voice.model.VoiceInput.MessageType;
@@ -74,10 +75,10 @@ public class AlexaResource {
    * Generates a welcome message.
    *
    * @return The message, never null
-   * @throws IOException 
+   * @throws DerpwizardException 
    */
   @POST
-  public SpeechletResponseEnvelope doAlexaRequest(@NotNull @Valid SpeechletRequestEnvelope request) throws IOException{
+  public SpeechletResponseEnvelope doAlexaRequest(@NotNull @Valid SpeechletRequestEnvelope request) throws DerpwizardException{
     if (request.getRequest() == null) {
       throw new RuntimeException("Missing request body."); //TODO: create AlexaException
     }

@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
 import com.derpgroup.derpwizard.voice.model.VoiceInput;
@@ -46,9 +47,9 @@ public abstract class AbstractManager {
    *          The message to dispatch, not null
    * @param builder
    *          The document builder to append messages to, not null
-   * @throws IOException 
+   * @throws DerpwizardException 
    */
-  public void handleRequest(@NonNull VoiceInput voiceInput, @NonNull SsmlDocumentBuilder builder) throws IOException {
+  public void handleRequest(@NonNull VoiceInput voiceInput, @NonNull SsmlDocumentBuilder builder) throws DerpwizardException {
     CommonMetadata metadata = voiceInput.getMetadata();
     ConversationHistoryUtils.registerRequestInConversationHistory(voiceInput.getMessageSubject(), voiceInput.getMessageAsMap(), metadata, voiceInput.getMetadata().getConversationHistory());
     switch (voiceInput.getMessageType()) {
@@ -75,16 +76,16 @@ public abstract class AbstractManager {
 
   
 
-  protected abstract void doHelpRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
+  protected abstract void doHelpRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
 
-  protected abstract void doHelloRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
+  protected abstract void doHelloRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
 
-  protected abstract void doGoodbyeRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
+  protected abstract void doGoodbyeRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
 
-  protected abstract void doCancelRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
+  protected abstract void doCancelRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
 
-  protected abstract void doStopRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
+  protected abstract void doStopRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
 
-  protected abstract void doConversationRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder);
+  protected abstract void doConversationRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
   
 }
