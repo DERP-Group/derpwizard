@@ -32,7 +32,7 @@ public class ConversationHistoryUtilsTest {
     IntentRequest intentRequest = IntentRequest.builder().withRequestId("123").withIntent(Intent.builder().withName("testSubject").build()).build();
     AlexaInput alexaInput = new AlexaInput(intentRequest);
     
-    ConversationHistoryUtils.appendToConversationHistory(alexaInput, alexaInput.getMetadata(), mapper);
+    ConversationHistoryUtils.appendToConversationHistory(alexaInput, alexaInput.getMetadata());
     assertNotNull(alexaInput);
     assertNotNull(alexaInput.getMetadata());
     assertNotNull(alexaInput.getMetadata().getConversationHistory());
@@ -53,7 +53,7 @@ public class ConversationHistoryUtilsTest {
     IntentRequest intentRequest = IntentRequest.builder().withRequestId("123").withIntent(Intent.builder().withName("testSubject2").build()).build();
     AlexaInput alexaInput = new AlexaInput(intentRequest, commonMetadata);
     
-    ConversationHistoryUtils.appendToConversationHistory(alexaInput, alexaInput.getMetadata(), mapper);
+    ConversationHistoryUtils.appendToConversationHistory(alexaInput, alexaInput.getMetadata());
     assertNotNull(alexaInput);
     assertNotNull(alexaInput.getMetadata());
     assertNotNull(alexaInput.getMetadata().getConversationHistory());

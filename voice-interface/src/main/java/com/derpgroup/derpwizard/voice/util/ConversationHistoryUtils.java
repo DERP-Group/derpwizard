@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ConversationHistoryUtils {
 
+  private static ObjectMapper mapper;
+  
   public static ConversationHistoryEntry getLastNonMetaRequestBySubject(Deque<ConversationHistoryEntry> conversationHistory, Set<String> metaSubjects){ //Lets talk about what this should be named
     
     for(ConversationHistoryEntry entry : conversationHistory){
@@ -27,13 +29,13 @@ public class ConversationHistoryUtils {
   }
   
   //Should this operate on the object directly, or return something?
-  public static void appendToConversationHistory(@NonNull VoiceInput voiceInput, CommonMetadata metadata, ObjectMapper mapper) {
+  public static void appendToConversationHistory(@NonNull VoiceInput voiceInput, CommonMetadata metadata) {
     Deque<ConversationHistoryEntry> conversationHistory = metadata.getConversationHistory();
     if(conversationHistory == null){
       conversationHistory = new ArrayDeque<ConversationHistoryEntry>();
     }
     
-    CommonMetadata metadataClone = mapper.convertValue(metadata, new TypeReference<CommonMetadata>(){});
+    CommonMetadata metadataClone = getMapper().convertValue(metadata, new TypeReference<CommonMetadata>(){});
     
     ConversationHistoryEntry entry = new ConversationHistoryEntry();
     entry.setMessageMap(new LinkedHashMap<String,String>(voiceInput.getMessageAsMap()));
@@ -42,5 +44,13 @@ public class ConversationHistoryUtils {
     
     conversationHistory.push(entry);
     metadata.setConversationHistory(conversationHistory); //this is only needed in case it was null coming in
+  }
+  
+  public static ObjectMapper getMapper(){
+    if(mapper == null){
+      mapper = new ObjectMapper();
+    }
+    
+    return mapper;
   }
 }

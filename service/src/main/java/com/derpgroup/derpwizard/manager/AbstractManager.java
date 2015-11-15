@@ -36,12 +36,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public abstract class AbstractManager {
   
-  //protected Module mapperModule;
-  protected ObjectMapper mapper;
+  //protected ObjectMapper mapper;
 
   public AbstractManager(){
-  //  mapperModule = new SimpleModule();
-    mapper = new ObjectMapper();
+   // mapper = new ObjectMapper();
   }
   
   /**
@@ -54,7 +52,7 @@ public abstract class AbstractManager {
    */
   public void handleRequest(@NonNull VoiceInput voiceInput, @NonNull SsmlDocumentBuilder builder) {
     CommonMetadata metadata = voiceInput.getMetadata();
-    ConversationHistoryUtils.appendToConversationHistory(voiceInput, metadata, mapper);
+    ConversationHistoryUtils.appendToConversationHistory(voiceInput, metadata);
     switch (voiceInput.getMessageType()) {
       case START_OF_CONVERSATION:
         doHelloRequest(voiceInput, builder);
