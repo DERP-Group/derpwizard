@@ -1,5 +1,6 @@
 package com.derpgroup.derpwizard.voice.util;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -27,7 +28,7 @@ public class ConversationHistoryUtilsTest {
   }
   
   @Test
-  public void testAppendToConversationHistory_firstEntry(){
+  public void testAppendToConversationHistory_firstEntry() throws IOException{
     
     IntentRequest intentRequest = IntentRequest.builder().withRequestId("123").withIntent(Intent.builder().withName("testSubject").build()).build();
     AlexaInput alexaInput = new AlexaInput(intentRequest);
@@ -42,7 +43,7 @@ public class ConversationHistoryUtilsTest {
   }
   
   @Test
-  public void testAppendToConversationHistory_existingEntry(){
+  public void testAppendToConversationHistory_existingEntry() throws IOException{
     CommonMetadata commonMetadata = new CommonMetadata();
     ConversationHistoryEntry entry = new ConversationHistoryEntry();
     entry.setMessageSubject("testSubject1");

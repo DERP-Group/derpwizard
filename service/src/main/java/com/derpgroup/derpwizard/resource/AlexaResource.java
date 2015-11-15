@@ -20,6 +20,7 @@
 
 package com.derpgroup.derpwizard.resource;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -73,9 +74,10 @@ public class AlexaResource {
    * Generates a welcome message.
    *
    * @return The message, never null
+   * @throws IOException 
    */
   @POST
-  public SpeechletResponseEnvelope doAlexaRequest(@NotNull @Valid SpeechletRequestEnvelope request){
+  public SpeechletResponseEnvelope doAlexaRequest(@NotNull @Valid SpeechletRequestEnvelope request) throws IOException{
     if (request.getRequest() == null) {
       throw new RuntimeException("Missing request body."); //TODO: create AlexaException
     }

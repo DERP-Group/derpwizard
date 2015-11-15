@@ -20,13 +20,14 @@
 
 package com.derpgroup.derpwizard.manager;
 
+import java.io.IOException;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
 import com.derpgroup.derpwizard.voice.model.VoiceInput;
 import com.derpgroup.derpwizard.voice.util.ConversationHistoryUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Base class for message dispatchers.
@@ -45,8 +46,9 @@ public abstract class AbstractManager {
    *          The message to dispatch, not null
    * @param builder
    *          The document builder to append messages to, not null
+   * @throws IOException 
    */
-  public void handleRequest(@NonNull VoiceInput voiceInput, @NonNull SsmlDocumentBuilder builder) {
+  public void handleRequest(@NonNull VoiceInput voiceInput, @NonNull SsmlDocumentBuilder builder) throws IOException {
     CommonMetadata metadata = voiceInput.getMetadata();
     ConversationHistoryUtils.registerRequestInConversationHistory(voiceInput.getMessageSubject(), voiceInput.getMessageAsMap(), metadata, voiceInput.getMetadata().getConversationHistory());
     switch (voiceInput.getMessageType()) {

@@ -1,5 +1,6 @@
 package com.derpgroup.derpwizard.voice.util;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedHashMap;
@@ -11,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.ConversationHistoryEntry;
 import com.derpgroup.derpwizard.voice.model.VoiceInput;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,13 +32,21 @@ public class ConversationHistoryUtils {
   }
   
   //Should this operate on the object directly, or return something?
-  public static void registerRequestInConversationHistory(String messageSubject, Map<String,String> messageMap, CommonMetadata metadata, Deque<ConversationHistoryEntry> conversationHistory) {
+  public static void registerRequestInConversationHistory(String messageSubject, Map<String,String> messageMap, CommonMetadata metadata, Deque<ConversationHistoryEntry> conversationHistory) throws IOException {
     //Deque<ConversationHistoryEntry> conversationHistory = metadata.getConversationHistory();
     if(conversationHistory == null){
       conversationHistory = new ArrayDeque<ConversationHistoryEntry>();
     }
-    
-    CommonMetadata metadataClone = getMapper().convertValue(metadata, new TypeReference<CommonMetadata>(){});
+
+    CommonMetadata metadataClone;
+    try {
+      String metadataString;metadataString = getMapper().writeValueAsString(metadata);
+      metadataClone = getMapper().readValue(metadataString, new TypeReference<CommonMetadata>(){});
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      throw e;
+    }
     
     ConversationHistoryEntry entry = new ConversationHistoryEntry();
     entry.setMessageMap(new LinkedHashMap<String,String>(messageMap));
