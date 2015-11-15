@@ -84,7 +84,6 @@ public class AlexaResource {
    * Generates a welcome message.
    *
    * @return The message, never null
-   * @throws DerpwizardException 
    */
   @POST
   public SpeechletResponseEnvelope doAlexaRequest(@NotNull @Valid SpeechletRequestEnvelope request){
@@ -93,7 +92,7 @@ public class AlexaResource {
     CommonMetadata metadata = null;
     try{
       if (request.getRequest() == null) {
-        throw new RuntimeException("Missing request body."); //TODO: create AlexaException
+        throw new DerpwizardException("Missing request body."); //TODO: create AlexaException
       }
       
       Map<String, Object> sessionAttributes = request.getSession().getAttributes();
