@@ -3,6 +3,7 @@ package com.derpgroup.derpwizard.voice.util;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -29,8 +30,8 @@ public class ConversationHistoryUtils {
   }
   
   //Should this operate on the object directly, or return something?
-  public static void appendToConversationHistory(@NonNull VoiceInput voiceInput, CommonMetadata metadata) {
-    Deque<ConversationHistoryEntry> conversationHistory = metadata.getConversationHistory();
+  public static void registerRequestInConversationHistory(String messageSubject, Map<String,String> messageMap, CommonMetadata metadata, Deque<ConversationHistoryEntry> conversationHistory) {
+    //Deque<ConversationHistoryEntry> conversationHistory = metadata.getConversationHistory();
     if(conversationHistory == null){
       conversationHistory = new ArrayDeque<ConversationHistoryEntry>();
     }
@@ -38,8 +39,8 @@ public class ConversationHistoryUtils {
     CommonMetadata metadataClone = getMapper().convertValue(metadata, new TypeReference<CommonMetadata>(){});
     
     ConversationHistoryEntry entry = new ConversationHistoryEntry();
-    entry.setMessageMap(new LinkedHashMap<String,String>(voiceInput.getMessageAsMap()));
-    entry.setMessageSubject(voiceInput.getMessageSubject());
+    entry.setMessageMap(new LinkedHashMap<String,String>(messageMap));
+    entry.setMessageSubject(messageSubject);
     entry.setMetadata(metadataClone);
     
     conversationHistory.push(entry);
