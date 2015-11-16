@@ -56,9 +56,21 @@ public class AlexaInput implements VoiceInput {
     if (!(request instanceof IntentRequest)) {
       return "";
     }
-
+    
     IntentRequest intentRequest = (IntentRequest) request;
-    return intentRequest.getIntent().getName();
+    String intentRequestName = intentRequest.getIntent().getName();
+    if(intentRequestName.equalsIgnoreCase("AMAZON.HelpIntent")){
+      return "HELP";
+    }
+    
+    if(intentRequestName.equalsIgnoreCase("AMAZON.CancelIntent")){
+      return "CANCEL";
+    }
+    
+    if(intentRequestName.equalsIgnoreCase("AMAZON.StopIntent")){
+      return "STOP";
+    }
+    return intentRequestName;
   }
 
   @Override
