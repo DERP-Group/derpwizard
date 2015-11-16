@@ -53,7 +53,11 @@ public class AlexaInput implements VoiceInput {
 
   @Override
   public String getMessageSubject() {
-    if (!(request instanceof IntentRequest)) {
+    if(request instanceof LaunchRequest){
+      return "START_OF_CONVERSATION";
+    }else if(request instanceof SessionEndedRequest){
+      return "END_OF_CONVERSATION";
+    }else if (!(request instanceof IntentRequest)) {
       return "";
     }
     
