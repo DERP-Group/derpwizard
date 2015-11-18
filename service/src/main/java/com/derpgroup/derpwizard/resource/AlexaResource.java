@@ -21,6 +21,7 @@
 package com.derpgroup.derpwizard.resource;
 
 import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,15 +31,18 @@ import io.dropwizard.setup.Environment;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.SimpleCard;
+import com.derpgroup.derpwizard.alexa.AlexaUtils;
 import com.derpgroup.derpwizard.configuration.MainConfig;
 import com.derpgroup.derpwizard.manager.DerpWizardManager;
 import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
@@ -75,11 +79,17 @@ public class AlexaResource {
    *
    * @return The message, never null
    * @throws IOException 
+   * @throws CertificateException 
    */
   @POST
-  public SpeechletResponseEnvelope doAlexaRequest(@NotNull @Valid SpeechletRequestEnvelope request) throws IOException{
+  public SpeechletResponseEnvelope doAlexaRequest(@NotNull @Valid SpeechletRequestEnvelope request, @HeaderParam("SignatureCertChainUrl") String signatureCertChainUrl, 
+      @HeaderParam("Signature") String signature, @QueryParam("testFlag") Boolean testFlag) throws IOException, CertificateException{
     if (request.getRequest() == null) {
       throw new RuntimeException("Missing request body."); //TODO: create AlexaException
+    }
+    
+    if(testFlag == null || testFlag == false){ 
+      AlexaUtils.validateAlexaRequest(request, signatureCertChainUrl, signature);
     }
 
     SsmlDocumentBuilder builder = new SsmlDocumentBuilder(UNSUPPORTED_SSML_TAGS);
