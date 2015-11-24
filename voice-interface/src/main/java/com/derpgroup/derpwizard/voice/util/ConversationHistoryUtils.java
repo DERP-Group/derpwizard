@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.ConversationHistoryEntry;
 import com.derpgroup.derpwizard.voice.model.VoiceInput;
@@ -32,7 +33,7 @@ public class ConversationHistoryUtils {
   }
   
   //Should this operate on the object directly, or return something?
-  public static void registerRequestInConversationHistory(String messageSubject, Map<String,String> messageMap, CommonMetadata metadata, Deque<ConversationHistoryEntry> conversationHistory) throws IOException {
+  public static void registerRequestInConversationHistory(String messageSubject, Map<String,String> messageMap, CommonMetadata metadata, Deque<ConversationHistoryEntry> conversationHistory) throws DerpwizardException {
     //Deque<ConversationHistoryEntry> conversationHistory = metadata.getConversationHistory();
     if(conversationHistory == null){
       conversationHistory = new ArrayDeque<ConversationHistoryEntry>();
@@ -43,9 +44,7 @@ public class ConversationHistoryUtils {
       String metadataString;metadataString = getMapper().writeValueAsString(metadata);
       metadataClone = getMapper().readValue(metadataString, new TypeReference<CommonMetadata>(){});
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw e;
+      throw new DerpwizardException("Unknown exception.",e.getMessage(),"IOException adding to conversation history.");
     }
     
     ConversationHistoryEntry entry = new ConversationHistoryEntry();
