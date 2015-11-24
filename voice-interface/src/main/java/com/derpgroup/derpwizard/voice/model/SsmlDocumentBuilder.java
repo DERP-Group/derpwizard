@@ -83,8 +83,8 @@ public class SsmlDocumentBuilder {
   private List<List<StringBuilder>> paragraphs;
   private int index = 0;
   private boolean conversationEnd = true; // TODO: Remove this
-  private String cardContent; // TODO: Remove this
-  private String cardTitle; // TODO: Remove this
+  private String fullTextMessage; // TODO: Remove this
+  private String shortFormTextMessage; // TODO: Remove this
 
   public SsmlDocumentBuilder() {
     this(Collections.emptyList());
@@ -295,20 +295,20 @@ public class SsmlDocumentBuilder {
     return paragraph;
   }
 
-  public String getCardContent() {
-    return cardContent;
+  public String getFullTextMessage() {
+    return fullTextMessage;
   }
 
-  public void setCardContent(String cardContent) {
-    this.cardContent = cardContent;
+  public void setFullTextMessage(String fullTextMessage) {
+    this.fullTextMessage = fullTextMessage;
   }
 
-  public String getCardTitle() {
-    return cardTitle;
+  public String getShortFormTextMessage() {
+    return shortFormTextMessage;
   }
 
-  public void setCardTitle(String cardTitle) {
-    this.cardTitle = cardTitle;
+  public void setShortFormTextMessage(String shortFormTextMessage) {
+    this.shortFormTextMessage = shortFormTextMessage;
   }
   
 }
