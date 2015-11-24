@@ -20,6 +20,7 @@
 
 package com.derpgroup.derpwizard.resource;
 
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,9 +31,11 @@ import io.dropwizard.setup.Environment;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
@@ -42,6 +45,7 @@ import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.SimpleCard;
+import com.derpgroup.derpwizard.alexa.AlexaUtils;
 import com.derpgroup.derpwizard.configuration.MainConfig;
 import com.derpgroup.derpwizard.manager.DerpWizardManager;
 import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
@@ -87,13 +91,18 @@ public class AlexaResource {
    * @return The message, never null
    */
   @POST
-  public SpeechletResponseEnvelope doAlexaRequest(@NotNull @Valid SpeechletRequestEnvelope request){
+  public SpeechletResponseEnvelope doAlexaRequest(@NotNull @Valid SpeechletRequestEnvelope request, @HeaderParam("SignatureCertChainUrl") String signatureCertChainUrl, 
+      @HeaderParam("Signature") String signature, @QueryParam("testFlag") Boolean testFlag){
 
     ObjectMapper mapper = new ObjectMapper();
     CommonMetadata metadata = null;
     try{
       if (request.getRequest() == null) {
         throw new DerpwizardException(DerpwizardExceptionReasons.MISSING_INFO.getSsml(),"Missing request body."); //TODO: create AlexaException
+      }
+      
+      if(testFlag == null || testFlag == false){ 
+        AlexaUtils.validateAlexaRequest(request, signatureCertChainUrl, signature);
       }
       
       Map<String, Object> sessionAttributes = request.getSession().getAttributes();
