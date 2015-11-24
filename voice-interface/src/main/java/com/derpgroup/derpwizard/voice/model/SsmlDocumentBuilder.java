@@ -82,7 +82,9 @@ public class SsmlDocumentBuilder {
   private Set<String> ignoreTags;
   private List<List<StringBuilder>> paragraphs;
   private int index = 0;
-  private boolean conversationEnd = true;
+  private boolean conversationEnd = true; // TODO: Remove this
+  private String fullTextMessage; // TODO: Remove this
+  private String shortFormTextMessage; // TODO: Remove this
 
   public SsmlDocumentBuilder() {
     this(Collections.emptyList());
@@ -292,4 +294,21 @@ public class SsmlDocumentBuilder {
 
     return paragraph;
   }
+
+  public String getFullTextMessage() {
+    return fullTextMessage;
+  }
+
+  public void setFullTextMessage(String fullTextMessage) {
+    this.fullTextMessage = fullTextMessage;
+  }
+
+  public String getShortFormTextMessage() {
+    return shortFormTextMessage;
+  }
+
+  public void setShortFormTextMessage(String shortFormTextMessage) {
+    this.shortFormTextMessage = shortFormTextMessage;
+  }
+  
 }
