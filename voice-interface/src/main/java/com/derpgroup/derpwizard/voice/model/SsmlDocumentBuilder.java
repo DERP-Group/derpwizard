@@ -82,7 +82,9 @@ public class SsmlDocumentBuilder {
   private Set<String> ignoreTags;
   private List<List<StringBuilder>> paragraphs;
   private int index = 0;
-  private boolean conversationEnd = true;
+  private boolean conversationEnd = true; // TODO: Remove this
+  private String cardContent; // TODO: Remove this
+  private String cardTitle; // TODO: Remove this
 
   public SsmlDocumentBuilder() {
     this(Collections.emptyList());
@@ -292,4 +294,21 @@ public class SsmlDocumentBuilder {
 
     return paragraph;
   }
+
+  public String getCardContent() {
+    return cardContent;
+  }
+
+  public void setCardContent(String cardContent) {
+    this.cardContent = cardContent;
+  }
+
+  public String getCardTitle() {
+    return cardTitle;
+  }
+
+  public void setCardTitle(String cardTitle) {
+    this.cardTitle = cardTitle;
+  }
+  
 }
