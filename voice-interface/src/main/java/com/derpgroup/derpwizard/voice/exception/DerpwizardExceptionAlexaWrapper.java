@@ -9,8 +9,6 @@ import com.amazon.speech.ui.SsmlOutputSpeech;
 
 public class DerpwizardExceptionAlexaWrapper extends SpeechletResponseEnvelope {
   
-  
-  
   public DerpwizardExceptionAlexaWrapper(DerpwizardException exception){
     this(exception,null,null);
   }
@@ -37,6 +35,7 @@ public class DerpwizardExceptionAlexaWrapper extends SpeechletResponseEnvelope {
     SpeechletResponse response = new SpeechletResponse();
     response.setCard(card);
     response.setOutputSpeech(outputSpeech);
+    response.setShouldEndSession(true); //At least until we decide on a way to pass this
     this.setResponse(response);
   }
 }
