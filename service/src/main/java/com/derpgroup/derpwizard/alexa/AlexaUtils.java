@@ -18,14 +18,14 @@ public class AlexaUtils {
     try {
       TimestampSpeechletRequestVerifier timestampVerifier = new TimestampSpeechletRequestVerifier(150, TimeUnit.SECONDS);
       if(!timestampVerifier.verify(request.getRequest(), request.getSession())){
-        throw new DerpwizardException("Invalid request.", "Request timestamp sent was outside allowable margins.","Invalid request timestamp." );  //REPLACE ME WITH OUR REAL EXCEPTION
+        throw new DerpwizardException("Invalid request.", "Request timestamp sent was outside allowable margins.","Invalid request timestamp." );
       }
       ObjectMapper mapper = new ObjectMapper();
       byte[] serializedSpeechletRequest = mapper.writeValueAsBytes(request.getRequest());
       SpeechletRequestSignatureVerifier.checkRequestSignature(serializedSpeechletRequest, signature, signatureCertChainUrl);
       SpeechletRequestSignatureVerifier.retrieveAndVerifyCertificateChain(signatureCertChainUrl);
     } catch (CertificateException | SecurityException e) {
-      throw new DerpwizardException(DerpwizardExceptionReasons.MISSING_INFO.getSsml(), "Speechlet request did not contain valid signature information: " + e.getMessage(),"Invalid signature." );  //REPLACE ME WITH OUR REAL EXCEPTION
+      throw new DerpwizardException(DerpwizardExceptionReasons.MISSING_INFO.getSsml(), "Speechlet request did not contain valid signature information: " + e.getMessage(),"Invalid signature." );
     } catch (JsonProcessingException e) {
       throw new DerpwizardException("An unknown exception occured.", "Unexpected exception of type: JsonProcessingException.", "Unexpected exception.");
     }
