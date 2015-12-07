@@ -18,7 +18,7 @@ public class AlexaUtils {
     try {
       TimestampSpeechletRequestVerifier timestampVerifier = new TimestampSpeechletRequestVerifier(150, TimeUnit.SECONDS);
       if(!timestampVerifier.verify(request.getRequest(), request.getSession())){
-        throw new DerpwizardException("Invalid request.", "Requet timestamp sent with was outside allowable margins - failing to prevent replay attacks.","Invalid request timestamp." );  //REPLACE ME WITH OUR REAL EXCEPTION
+        throw new DerpwizardException("Invalid request.", "Request timestamp sent was outside allowable margins.","Invalid request timestamp." );  //REPLACE ME WITH OUR REAL EXCEPTION
       }
       ObjectMapper mapper = new ObjectMapper();
       byte[] serializedSpeechletRequest = mapper.writeValueAsBytes(request.getRequest());
