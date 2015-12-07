@@ -40,7 +40,7 @@ public class DerpwizardException extends Exception {
   }
   
   public enum DerpwizardExceptionReasons{
-    MISSING_INFO("<speak>I couldn't complete the request because some info was missing.</speak>");
+    MISSING_INFO("<speak>I couldn't complete the request because some information was missing.</speak>");
     
     private String ssml;
     
