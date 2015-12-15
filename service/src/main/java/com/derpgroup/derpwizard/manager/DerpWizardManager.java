@@ -20,44 +20,55 @@
 
 package com.derpgroup.derpwizard.manager;
 
-import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
-import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder.EmphasisLevel;
+import com.derpgroup.derpwizard.voice.model.ServiceOutput;
 import com.derpgroup.derpwizard.voice.model.VoiceInput;
 
 /**
  * Manager class for dispatching input messages.
  *
+ * @author David
  * @author Eric
  * @author Rusty
+ * @author Paul
  * @since 0.0.1
  */
 public class DerpWizardManager extends AbstractManager {
 
   @Override
-  protected void doHelpRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) {
-    builder.endParagraph().text("I'd love to help, but I don't have any help topics programmed yet.").endParagraph();
+  protected void doHelpRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.getVoiceOutput().setSsmltext("I'd love to help, but I don't have any help topics programmed yet.");
+    serviceOutput.getVoiceOutput().setPlaintext("I'd love to help, but I don't have any help topics programmed yet.");
+    serviceOutput.setConversationEnded(true);
   }
 
   @Override
-  protected void doHelloRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) {
-    builder.endParagraph().text("Hi. This is DerpWizard.").endParagraph();
+  protected void doHelloRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.getVoiceOutput().setSsmltext("Hi. This is DerpWizard.");
+    serviceOutput.getVoiceOutput().setPlaintext("Hi. This is DerpWizard.");
+    serviceOutput.setConversationEnded(true);
   }
 
   @Override
-  protected void doGoodbyeRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) {
-    builder.endParagraph().text("Goodbye!", EmphasisLevel.MODERATE).endParagraph();
+  protected void doGoodbyeRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.getVoiceOutput().setSsmltext("Goodbye!");
+    serviceOutput.getVoiceOutput().setPlaintext("Goodbye!");
+    serviceOutput.setConversationEnded(true);
   }
 
   @Override
-  protected void doConversationRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) {
-    builder.endParagraph().text("I'd love to help, but I'm not programmed to have conversations yet.").endParagraph();
+  protected void doConversationRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.getVoiceOutput().setSsmltext("I'd love to help, but I'm not programmed to have conversations yet.");
+    serviceOutput.getVoiceOutput().setPlaintext("I'd love to help, but I'm not programmed to have conversations yet.");
+    serviceOutput.setConversationEnded(true);
   }
 
   @Override
-  protected void doCancelRequest(VoiceInput voiceInput,
-      SsmlDocumentBuilder builder) {}
+  protected void doCancelRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.setConversationEnded(true);
+  }
 
   @Override
-  protected void doStopRequest(VoiceInput voiceInput,
-      SsmlDocumentBuilder builder) {}
+  protected void doStopRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.setConversationEnded(true);
+  }
 }

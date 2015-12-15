@@ -7,13 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.ConversationHistoryEntry;
-import com.derpgroup.derpwizard.voice.model.VoiceInput;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,9 +28,7 @@ public class ConversationHistoryUtils {
     return null; //Should this return null?
   }
   
-  //Should this operate on the object directly, or return something?
   public static void registerRequestInConversationHistory(String messageSubject, Map<String,String> messageMap, CommonMetadata metadata, Deque<ConversationHistoryEntry> conversationHistory) throws DerpwizardException {
-    //Deque<ConversationHistoryEntry> conversationHistory = metadata.getConversationHistory();
     if(conversationHistory == null){
       conversationHistory = new ArrayDeque<ConversationHistoryEntry>();
     }
