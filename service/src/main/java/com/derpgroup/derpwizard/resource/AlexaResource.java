@@ -103,8 +103,10 @@ public class AlexaResource {
       VoiceInput voiceInput = VoiceMessageFactory.buildInputMessage(request.getRequest(), InterfaceType.ALEXA);
       manager.handleRequest(voiceInput, serviceOutput);
   
+      // Build the Alexa response object
       SpeechletResponseEnvelope responseEnvelope = new SpeechletResponseEnvelope();
-      responseEnvelope.setSessionAttributes(request.getSession().getAttributes());
+      Map<String,Object> sessionAttributesOutput = mapper.convertValue(metadata, new TypeReference<Map<String,Object>>(){});
+      responseEnvelope.setSessionAttributes(sessionAttributesOutput);
 
       SpeechletResponse speechletResponse = new SpeechletResponse();
       speechletResponse.setShouldEndSession(serviceOutput.isConversationEnded());
