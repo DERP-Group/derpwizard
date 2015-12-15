@@ -34,6 +34,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +87,7 @@ public class AlexaResource {
       @HeaderParam("Signature") String signature, @QueryParam("testFlag") Boolean testFlag){
 
     ObjectMapper mapper = new ObjectMapper();
-    CommonMetadata metadata = null;
+    CommonMetadata outputMetadata = null;
     try{
       if (request.getRequest() == null) {
         throw new DerpwizardException(DerpwizardExceptionReasons.MISSING_INFO.getSsml(),"Missing request body."); //TODO: create AlexaException
@@ -95,26 +96,24 @@ public class AlexaResource {
         AlexaUtils.validateAlexaRequest(request, signatureCertChainUrl, signature);
       }
       
-      metadata = mapper.convertValue(request.getSession().getAttributes(), new TypeReference<CommonMetadata>(){});
+      CommonMetadata inputMetadata = mapper.convertValue(request.getSession().getAttributes(), new TypeReference<CommonMetadata>(){});
+      outputMetadata = mapper.convertValue(request.getSession().getAttributes(), new TypeReference<CommonMetadata>(){});
       
       // Build the ServiceOutput object, which gets updated within the service itself
       ServiceOutput serviceOutput = new ServiceOutput();
-      serviceOutput.setMetadata(metadata);
-      VoiceInput voiceInput = VoiceMessageFactory.buildInputMessage(request.getRequest(), InterfaceType.ALEXA);
+      serviceOutput.setMetadata(outputMetadata);
+      VoiceInput voiceInput = VoiceMessageFactory.buildInputMessage(request.getRequest(), inputMetadata, InterfaceType.ALEXA);
+      
+      // Call the service
       manager.handleRequest(voiceInput, serviceOutput);
   
       // Build the Alexa response object
       SpeechletResponseEnvelope responseEnvelope = new SpeechletResponseEnvelope();
-      Map<String,Object> sessionAttributesOutput = mapper.convertValue(metadata, new TypeReference<Map<String,Object>>(){});
+      Map<String,Object> sessionAttributesOutput = mapper.convertValue(outputMetadata, new TypeReference<Map<String,Object>>(){});
       responseEnvelope.setSessionAttributes(sessionAttributesOutput);
 
       SpeechletResponse speechletResponse = new SpeechletResponse();
-      speechletResponse.setShouldEndSession(serviceOutput.isConversationEnded());
-
-      SimpleCard card = new SimpleCard();
-      card.setTitle(serviceOutput.getVisualOutput().getTitle());
-      card.setContent(serviceOutput.getVisualOutput().getText());
-      
+      SimpleCard card;
       SsmlOutputSpeech outputSpeech;
 
       // If this is the end of the conversation then
@@ -127,6 +126,16 @@ public class AlexaResource {
         speechletResponse.setShouldEndSession(true);
         break;
       default:
+        if(StringUtils.isNotEmpty(serviceOutput.getVisualOutput().getTitle()) &&
+            StringUtils.isNotEmpty(serviceOutput.getVisualOutput().getText()) ){
+          card = new SimpleCard();
+          card.setTitle(serviceOutput.getVisualOutput().getTitle());
+          card.setContent(serviceOutput.getVisualOutput().getText());
+        }
+        else{
+          card = null;
+        }
+        
         outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml(serviceOutput.getVoiceOutput().getSsmltext());
         speechletResponse.setShouldEndSession(serviceOutput.isConversationEnded());
@@ -140,10 +149,10 @@ public class AlexaResource {
       return responseEnvelope;
     }catch(DerpwizardException e){
       LOG.debug(e.getMessage());
-      return new DerpwizardExceptionAlexaWrapper(e, "1.0",mapper.convertValue(metadata, new TypeReference<Map<String,Object>>(){}));
+      return new DerpwizardExceptionAlexaWrapper(e, "1.0",mapper.convertValue(outputMetadata, new TypeReference<Map<String,Object>>(){}));
     }catch(Throwable t){
       LOG.debug(t.getMessage());
-      return new DerpwizardExceptionAlexaWrapper(new DerpwizardException(t.getMessage()),"1.0", mapper.convertValue(metadata, new TypeReference<Map<String,Object>>(){}));
+      return new DerpwizardExceptionAlexaWrapper(new DerpwizardException(t.getMessage()),"1.0", mapper.convertValue(outputMetadata, new TypeReference<Map<String,Object>>(){}));
     }
   }
 }

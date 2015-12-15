@@ -31,11 +31,12 @@ public class ConversationHistoryUtils {
   public static void registerRequestInConversationHistory(String messageSubject, Map<String,String> messageMap, CommonMetadata metadata, Deque<ConversationHistoryEntry> conversationHistory) throws DerpwizardException {
     if(conversationHistory == null){
       conversationHistory = new ArrayDeque<ConversationHistoryEntry>();
+      metadata.setConversationHistory(conversationHistory);
     }
 
     CommonMetadata metadataClone;
     try {
-      String metadataString;metadataString = getMapper().writeValueAsString(metadata);
+      String metadataString = getMapper().writeValueAsString(metadata);
       metadataClone = getMapper().readValue(metadataString, new TypeReference<CommonMetadata>(){});
     } catch (IOException e) {
       throw new DerpwizardException("Unknown exception.",e.getMessage(),"IOException adding to conversation history.");
@@ -47,7 +48,6 @@ public class ConversationHistoryUtils {
     entry.setMetadata(metadataClone);
     
     conversationHistory.push(entry);
-    metadata.setConversationHistory(conversationHistory); //this is only needed in case it was null coming in
   }
   
   public static ObjectMapper getMapper(){

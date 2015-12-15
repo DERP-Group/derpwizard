@@ -48,8 +48,8 @@ public abstract class AbstractManager {
    * @throws DerpwizardException 
    */
   public void handleRequest(@NonNull VoiceInput voiceInput, @NonNull ServiceOutput serviceOutput) throws DerpwizardException {
-    CommonMetadata metadata = voiceInput.getMetadata();
-    ConversationHistoryUtils.registerRequestInConversationHistory(voiceInput.getMessageSubject(), voiceInput.getMessageAsMap(), metadata, voiceInput.getMetadata().getConversationHistory());
+    CommonMetadata metadata = serviceOutput.getMetadata();
+    ConversationHistoryUtils.registerRequestInConversationHistory(voiceInput.getMessageSubject(), voiceInput.getMessageAsMap(), metadata, metadata.getConversationHistory());
     switch (voiceInput.getMessageType()) {
       case START_OF_CONVERSATION:
         doHelloRequest(voiceInput, serviceOutput);

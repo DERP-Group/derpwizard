@@ -5,7 +5,15 @@ public class ServiceOutput {
   private VisualOutput visualOutput;
   private CommonMetadata metadata;
   boolean conversationEnded = false;
+
+  public ServiceOutput(){
+    voiceOutput = new VoiceOutput();
+    visualOutput = new VisualOutput();
+    metadata = new CommonMetadata();
+  }
   
+  // TODO: How did we want to enable reprompts?
+
   public VoiceOutput getVoiceOutput() {return voiceOutput; }
   public void setVoiceOutput(VoiceOutput voiceOutput) {this.voiceOutput = voiceOutput;}
   public VisualOutput getVisualOutput() {return visualOutput;}
