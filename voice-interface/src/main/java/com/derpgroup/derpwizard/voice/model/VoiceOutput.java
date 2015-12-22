@@ -26,6 +26,10 @@ public class VoiceOutput {
   private String ssmltext;
   
   public VoiceOutput(){}
+  public VoiceOutput(String text){
+    this.plaintext = text;
+    this.ssmltext = text;
+  }
   public VoiceOutput(String plaintext, String ssmltext){
     this.plaintext = plaintext;
     this.ssmltext = ssmltext;
