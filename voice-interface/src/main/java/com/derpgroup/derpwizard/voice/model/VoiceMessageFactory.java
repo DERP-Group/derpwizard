@@ -40,12 +40,9 @@ public class VoiceMessageFactory {
   }
 
   private static final Map<InterfaceType, Class<?>> INPUT_MAP = new HashMap<InterfaceType, Class<?>>();
-  private static final Map<InterfaceType, Class<?>> OUTPUT_MAP = new HashMap<InterfaceType, Class<?>>();
 
   static {
     INPUT_MAP.put(InterfaceType.ALEXA, AlexaInput.class);
-
-    OUTPUT_MAP.put(InterfaceType.ALEXA, AlexaOutput.class);
   }
 
   private VoiceMessageFactory() {
@@ -92,29 +89,6 @@ public class VoiceMessageFactory {
     try {
       return (VoiceInput) INPUT_MAP.get(type).getConstructor(Object.class, CommonMetadata.class).newInstance(request, metadata);
     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-      throw new UnsupportedOperationException("Failed to build instance", e);
-    }
-  }
-
-  /**
-   * Builds a user response wrapper around an SsmlDocument.
-   *
-   * @param document
-   *          The SSML to speak, not null
-   * @param type
-   *          The voice interface type, not null
-   * @return A VoiceOutput wrapper, never null
-   */
-  public static @NonNull VoiceOutput<?> buildOutputMessage(@NonNull SsmlDocument document, @NonNull InterfaceType type) {
-    if (!OUTPUT_MAP.containsKey(type)) {
-      throw new IllegalArgumentException("Invalid type: " + type);
-    }
-
-    try {
-      VoiceOutput<?> voiceOutput = (VoiceOutput<?>) OUTPUT_MAP.get(type).newInstance();
-      voiceOutput.setMessage(document);
-      return voiceOutput;
-    } catch (InstantiationException | IllegalAccessException e) {
       throw new UnsupportedOperationException("Failed to build instance", e);
     }
   }

@@ -20,13 +20,11 @@
 
 package com.derpgroup.derpwizard.manager;
 
-import java.io.IOException;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
-import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
+import com.derpgroup.derpwizard.voice.model.ServiceOutput;
 import com.derpgroup.derpwizard.voice.model.VoiceInput;
 import com.derpgroup.derpwizard.voice.util.ConversationHistoryUtils;
 
@@ -49,43 +47,43 @@ public abstract class AbstractManager {
    *          The document builder to append messages to, not null
    * @throws DerpwizardException 
    */
-  public void handleRequest(@NonNull VoiceInput voiceInput, @NonNull SsmlDocumentBuilder builder) throws DerpwizardException {
-    CommonMetadata metadata = voiceInput.getMetadata();
-    ConversationHistoryUtils.registerRequestInConversationHistory(voiceInput.getMessageSubject(), voiceInput.getMessageAsMap(), metadata, voiceInput.getMetadata().getConversationHistory());
+  public void handleRequest(@NonNull VoiceInput voiceInput, @NonNull ServiceOutput serviceOutput) throws DerpwizardException {
+    CommonMetadata metadata = serviceOutput.getMetadata();
+    ConversationHistoryUtils.registerRequestInConversationHistory(voiceInput.getMessageSubject(), voiceInput.getMessageAsMap(), metadata, metadata.getConversationHistory());
     switch (voiceInput.getMessageType()) {
       case START_OF_CONVERSATION:
-        doHelloRequest(voiceInput, builder);
+        doHelloRequest(voiceInput, serviceOutput);
         break;
       case END_OF_CONVERSATION:
-        doGoodbyeRequest(voiceInput, builder);
+        doGoodbyeRequest(voiceInput, serviceOutput);
         break;
       case HELP:
-        doHelpRequest(voiceInput, builder);
+        doHelpRequest(voiceInput, serviceOutput);
         break;
       case CANCEL:
-        doCancelRequest(voiceInput, builder);
+        doCancelRequest(voiceInput, serviceOutput);
         break;
       case STOP:
-        doStopRequest(voiceInput, builder);
+        doStopRequest(voiceInput, serviceOutput);
         break;
       case DEFAULT:
       default:
-        doConversationRequest(voiceInput, builder);
+        doConversationRequest(voiceInput, serviceOutput);
     }
   }
 
   
 
-  protected abstract void doHelpRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
+  protected abstract void doHelpRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) throws DerpwizardException;
 
-  protected abstract void doHelloRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
+  protected abstract void doHelloRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) throws DerpwizardException;
 
-  protected abstract void doGoodbyeRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
+  protected abstract void doGoodbyeRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) throws DerpwizardException;
 
-  protected abstract void doCancelRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
+  protected abstract void doCancelRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) throws DerpwizardException;
 
-  protected abstract void doStopRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
+  protected abstract void doStopRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) throws DerpwizardException;
 
-  protected abstract void doConversationRequest(VoiceInput voiceInput, SsmlDocumentBuilder builder) throws DerpwizardException;
+  protected abstract void doConversationRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) throws DerpwizardException;
   
 }

@@ -20,28 +20,23 @@
 
 package com.derpgroup.derpwizard.voice.model;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-/**
- * Text-to-speech message.
- *
- * @author Rusty
- * @since 0.0.1
- */
-public interface VoiceOutput<T> {
-
-  /**
-   * Message mutator.
-   *
-   * @param message
-   *          The response to convert to speech, not null
-   */
-  void setMessage(@NonNull SsmlDocument message);
-
-  /**
-   * Message accessor.
-   *
-   * @return The instance of the underlying implementation, never null
-   */
-  @NonNull T getImplInstance();
+public class VoiceOutput {
+  
+  private String plaintext;
+  private String ssmltext;
+  
+  public VoiceOutput(){}
+  public VoiceOutput(String text){
+    this.plaintext = text;
+    this.ssmltext = text;
+  }
+  public VoiceOutput(String plaintext, String ssmltext){
+    this.plaintext = plaintext;
+    this.ssmltext = ssmltext;
+  }
+  
+  public String getPlaintext() {return plaintext;}
+  public void setPlaintext(String plaintext) {this.plaintext = plaintext;}
+  public String getSsmltext() {return ssmltext;}
+  public void setSsmltext(String ssmltext) {this.ssmltext = ssmltext;}
 }
