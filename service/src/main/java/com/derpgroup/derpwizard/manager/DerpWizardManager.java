@@ -20,8 +20,8 @@
 
 package com.derpgroup.derpwizard.manager;
 
+import com.derpgroup.derpwizard.voice.model.ServiceInput;
 import com.derpgroup.derpwizard.voice.model.ServiceOutput;
-import com.derpgroup.derpwizard.voice.model.VoiceInput;
 
 /**
  * Manager class for dispatching input messages.
@@ -32,43 +32,100 @@ import com.derpgroup.derpwizard.voice.model.VoiceInput;
  * @author Paul
  * @since 0.0.1
  */
-public class DerpWizardManager extends AbstractManager {
+public class DerpWizardManager {
 
-  @Override
-  protected void doHelpRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+  protected void doHelpRequest(ServiceInput voiceInput, ServiceOutput serviceOutput) {
     serviceOutput.getVoiceOutput().setSsmltext("I'd love to help, but I don't have any help topics programmed yet.");
     serviceOutput.getVoiceOutput().setPlaintext("I'd love to help, but I don't have any help topics programmed yet.");
     serviceOutput.setConversationEnded(true);
   }
 
-  @Override
-  protected void doHelloRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+  protected void doHelloRequest(ServiceInput voiceInput, ServiceOutput serviceOutput) {
     serviceOutput.getVoiceOutput().setSsmltext("Hi. This is DerpWizard.");
     serviceOutput.getVoiceOutput().setPlaintext("Hi. This is DerpWizard.");
     serviceOutput.setConversationEnded(true);
   }
 
-  @Override
-  protected void doGoodbyeRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+  protected void doGoodbyeRequest(ServiceInput voiceInput, ServiceOutput serviceOutput) {
     serviceOutput.getVoiceOutput().setSsmltext("Goodbye!");
     serviceOutput.getVoiceOutput().setPlaintext("Goodbye!");
     serviceOutput.setConversationEnded(true);
   }
 
-  @Override
-  protected void doConversationRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
-    serviceOutput.getVoiceOutput().setSsmltext("I'd love to help, but I'm not programmed to have conversations yet.");
-    serviceOutput.getVoiceOutput().setPlaintext("I'd love to help, but I'm not programmed to have conversations yet.");
+  protected void doCancelRequest(ServiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.getVoiceOutput().setSsmltext("Cancelling");
+    serviceOutput.getVoiceOutput().setPlaintext("Cancelling");
     serviceOutput.setConversationEnded(true);
   }
 
-  @Override
-  protected void doCancelRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+  protected void doStopRequest(ServiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.getVoiceOutput().setSsmltext("Stopping");
+    serviceOutput.getVoiceOutput().setPlaintext("Stopping");
     serviceOutput.setConversationEnded(true);
   }
 
-  @Override
-  protected void doStopRequest(VoiceInput voiceInput, ServiceOutput serviceOutput) {
+  protected void doRepeatRequest(ServiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.getVoiceOutput().setSsmltext("Repeating");
+    serviceOutput.getVoiceOutput().setPlaintext("Repeating");
     serviceOutput.setConversationEnded(true);
+  }
+
+  protected void doYesRequest(ServiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.getVoiceOutput().setSsmltext("Yes");
+    serviceOutput.getVoiceOutput().setPlaintext("Yes");
+    serviceOutput.setConversationEnded(true);
+  }
+
+  protected void doNoRequest(ServiceInput voiceInput, ServiceOutput serviceOutput) {
+    serviceOutput.getVoiceOutput().setSsmltext("No");
+    serviceOutput.getVoiceOutput().setPlaintext("No");
+    serviceOutput.setConversationEnded(true);
+  }
+
+  /**
+   * An example primary entry point into the service.
+   * At this point the Resource classes should have mapped any device-specific requests
+   * into standard ServiceInput/ServiceOutput POJOs. As well as mapped any device-specific
+   * requests into service understandable subjects.
+   * @param serviceInput
+   * @param serviceOutput
+   */
+  public void handleRequest(ServiceInput serviceInput, ServiceOutput serviceOutput){
+    switch(serviceInput.getSubject()){
+    case "HELP":
+      doHelpRequest(serviceInput, serviceOutput);
+      break;
+
+    case "START_OF_CONVERSATION":
+      doHelloRequest(serviceInput, serviceOutput);
+      break;
+
+    case "END_OF_CONVERSATION":
+      doGoodbyeRequest(serviceInput, serviceOutput);
+      break;
+
+    case "CANCEL":
+      doCancelRequest(serviceInput, serviceOutput);
+      break;
+
+    case "STOP":
+      doStopRequest(serviceInput, serviceOutput);
+      break;
+
+    case "REPEAT":
+      doRepeatRequest(serviceInput, serviceOutput);
+      break;
+
+    case "YES":
+      doYesRequest(serviceInput, serviceOutput);
+      break;
+
+    case "NO":
+      doNoRequest(serviceInput, serviceOutput);
+      break;
+
+    default:
+      break;
+    }
   }
 }
