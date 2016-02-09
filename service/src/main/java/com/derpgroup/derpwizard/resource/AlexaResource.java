@@ -115,15 +115,15 @@ public class AlexaResource {
       serviceInput.setMessageAsMap(messageAsMap);
       
       SpeechletRequest speechletRequest = (SpeechletRequest)request.getRequest();
-      String intent = getMessageSubject(speechletRequest);
-      serviceInput.setSubject(intent);
+      String subject = getMessageSubject(speechletRequest);
+      serviceInput.setSubject(subject);
       
       ////////////////////////////////////
       // Build the ServiceOutput object //
       ////////////////////////////////////
       ServiceOutput serviceOutput = new ServiceOutput();
       outputMetadata = mapper.convertValue(request.getSession().getAttributes(), new TypeReference<CommonMetadata>(){});  // this gets sent to the client-side session
-      ConversationHistoryUtils.registerRequestInConversationHistory(intent, messageAsMap, outputMetadata, outputMetadata.getConversationHistory()); // build the conversation history for the outputMetadata
+      ConversationHistoryUtils.registerRequestInConversationHistory(subject, messageAsMap, outputMetadata, outputMetadata.getConversationHistory()); // build the conversation history for the outputMetadata
       serviceOutput.setMetadata(outputMetadata);
       
       // Call the service
@@ -172,10 +172,10 @@ public class AlexaResource {
       return responseEnvelope;
     }catch(DerpwizardException e){
       LOG.debug(e.getMessage());
-      return new DerpwizardExceptionAlexaWrapper(e, ALEXA_VERSION,mapper.convertValue(outputMetadata, new TypeReference<Map<String,Object>>(){}));
+      return new DerpwizardExceptionAlexaWrapper(e, "1.0",mapper.convertValue(outputMetadata, new TypeReference<Map<String,Object>>(){}));
     }catch(Throwable t){
       LOG.debug(t.getMessage());
-      return new DerpwizardExceptionAlexaWrapper(new DerpwizardException(t.getMessage()),ALEXA_VERSION, mapper.convertValue(outputMetadata, new TypeReference<Map<String,Object>>(){}));
+      return new DerpwizardExceptionAlexaWrapper(new DerpwizardException(t.getMessage()),"1.0", mapper.convertValue(outputMetadata, new TypeReference<Map<String,Object>>(){}));
     }
   }
   

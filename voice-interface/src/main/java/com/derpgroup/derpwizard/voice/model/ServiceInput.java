@@ -7,10 +7,6 @@ public class ServiceInput {
   private CommonMetadata metadata;
   private Map<String, String> messageAsMap;
   private String subject;
-  
-  public ServiceInput(){
-    
-  }
 
   public CommonMetadata getMetadata() {return metadata;}
   public void setMetadata(CommonMetadata metadata) {this.metadata = metadata;}
