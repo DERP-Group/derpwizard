@@ -22,18 +22,18 @@
     ]
   },
   "logging": {
-    "appenders": [
-      {
-        "type": "file",
-        "currentLogFilename": "/var/log/derpwizard/derpwizard.log",
-        "archivedLogFilenamePattern": "/var/log/derpwizard/derpwizard-%d.log",
-        "archivedFileCount": 5
-      }
-    ],
     "level": "INFO",
     "loggers": {
-      "com": {
-        "derpgroup": "DEBUG"
+      "com.derpgroup": {
+        "level": "INFO",
+        "appenders": [
+          {
+            "type": "file",
+            "currentLogFilename": "/var/log/derpwizard/derpwizard.log",
+            "archivedLogFilenamePattern": "/var/log/derpwizard/derpwizard-%d.log",
+            "archivedFileCount": 5
+          }
+        ]
       }
     }
   }

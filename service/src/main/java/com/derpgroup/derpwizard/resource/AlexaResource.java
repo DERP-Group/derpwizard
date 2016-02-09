@@ -40,28 +40,33 @@ import org.slf4j.LoggerFactory;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
+import com.amazon.speech.speechlet.IntentRequest;
+import com.amazon.speech.speechlet.LaunchRequest;
+import com.amazon.speech.speechlet.SessionEndedRequest;
+import com.amazon.speech.speechlet.SpeechletRequest;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.SimpleCard;
 import com.amazon.speech.ui.SsmlOutputSpeech;
-import com.derpgroup.derpwizard.alexa.AlexaUtils;
 import com.derpgroup.derpwizard.configuration.MainConfig;
 import com.derpgroup.derpwizard.manager.DerpWizardManager;
+import com.derpgroup.derpwizard.voice.alexa.AlexaUtils;
 import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
 import com.derpgroup.derpwizard.voice.exception.DerpwizardException.DerpwizardExceptionReasons;
 import com.derpgroup.derpwizard.voice.exception.DerpwizardExceptionAlexaWrapper;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
+import com.derpgroup.derpwizard.voice.model.ServiceInput;
 import com.derpgroup.derpwizard.voice.model.ServiceOutput;
-import com.derpgroup.derpwizard.voice.model.VoiceInput;
-import com.derpgroup.derpwizard.voice.model.VoiceMessageFactory;
-import com.derpgroup.derpwizard.voice.model.VoiceMessageFactory.InterfaceType;
+import com.derpgroup.derpwizard.voice.util.ConversationHistoryUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * REST APIs for requests generating from Amazon Alexa
- *
+ * 
+ * @author David
  * @author Eric
  * @author Rusty
+ * @author Paul
  * @since 0.0.1
  */
 @Path("/alexa")
@@ -70,6 +75,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AlexaResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(AlexaResource.class);
+  private static final String ALEXA_VERSION = "1.1.1";
 
   private DerpWizardManager manager;
 
@@ -96,16 +102,32 @@ public class AlexaResource {
         AlexaUtils.validateAlexaRequest(request, signatureCertChainUrl, signature);
       }
       
-      CommonMetadata inputMetadata = mapper.convertValue(request.getSession().getAttributes(), new TypeReference<CommonMetadata>(){});
-      outputMetadata = mapper.convertValue(request.getSession().getAttributes(), new TypeReference<CommonMetadata>(){});
+      // Build the Input Metadata object here
+      CommonMetadata inputMetadata = mapper.convertValue(request.getSession().getAttributes(), new TypeReference<CommonMetadata>(){});  // this comes from the client-side session
+      // Populate it with other information here, as required by your service. UserAccount info, echoId, serviceId, info from a database, etc
       
-      // Build the ServiceOutput object, which gets updated within the service itself
+      ///////////////////////////////////
+      // Build the ServiceInput object //
+      ///////////////////////////////////
+      ServiceInput serviceInput = new ServiceInput();
+      serviceInput.setMetadata(inputMetadata);
+      Map<String, String> messageAsMap = AlexaUtils.getMessageAsMap(request.getRequest());
+      serviceInput.setMessageAsMap(messageAsMap);
+      
+      SpeechletRequest speechletRequest = (SpeechletRequest)request.getRequest();
+      String subject = getMessageSubject(speechletRequest);
+      serviceInput.setSubject(subject);
+      
+      ////////////////////////////////////
+      // Build the ServiceOutput object //
+      ////////////////////////////////////
       ServiceOutput serviceOutput = new ServiceOutput();
+      outputMetadata = mapper.convertValue(request.getSession().getAttributes(), new TypeReference<CommonMetadata>(){});  // this gets sent to the client-side session
+      ConversationHistoryUtils.registerRequestInConversationHistory(subject, messageAsMap, outputMetadata, outputMetadata.getConversationHistory()); // build the conversation history for the outputMetadata
       serviceOutput.setMetadata(outputMetadata);
-      VoiceInput voiceInput = VoiceMessageFactory.buildInputMessage(request.getRequest(), inputMetadata, InterfaceType.ALEXA);
       
       // Call the service
-      manager.handleRequest(voiceInput, serviceOutput);
+      manager.handleRequest(serviceInput, serviceOutput);
   
       // Build the Alexa response object
       SpeechletResponseEnvelope responseEnvelope = new SpeechletResponseEnvelope();
@@ -117,10 +139,10 @@ public class AlexaResource {
       SsmlOutputSpeech outputSpeech;
 
       // If this is the end of the conversation then
-      switch(voiceInput.getMessageType()){
-      case END_OF_CONVERSATION:
-      case STOP:
-      case CANCEL:
+      switch(serviceInput.getSubject()){
+      case "END_OF_CONVERSATION":
+      case "STOP":
+      case "CANCEL":
         outputSpeech = null;
         card = null;
         speechletResponse.setShouldEndSession(true);
@@ -145,6 +167,7 @@ public class AlexaResource {
       speechletResponse.setOutputSpeech(outputSpeech);
       speechletResponse.setCard(card);
       responseEnvelope.setResponse(speechletResponse);
+      responseEnvelope.setVersion(ALEXA_VERSION);
   
       return responseEnvelope;
     }catch(DerpwizardException e){
@@ -154,5 +177,42 @@ public class AlexaResource {
       LOG.debug(t.getMessage());
       return new DerpwizardExceptionAlexaWrapper(new DerpwizardException(t.getMessage()),"1.0", mapper.convertValue(outputMetadata, new TypeReference<Map<String,Object>>(){}));
     }
+  }
+  
+  /**
+   * An example helper function to map Alexa specific "intents" into program specific subjects.
+   * @param request
+   * @return
+   */
+  public static String getMessageSubject(SpeechletRequest request) {
+    if(request instanceof LaunchRequest){
+      return "START_OF_CONVERSATION";
+    }else if(request instanceof SessionEndedRequest){
+      return "END_OF_CONVERSATION";
+    }else if (!(request instanceof IntentRequest)) {
+      return "";
+    }
+    
+    IntentRequest intentRequest = (IntentRequest) request;
+    String intentRequestName = intentRequest.getIntent().getName();
+    if(intentRequestName.equalsIgnoreCase("AMAZON.HelpIntent")){
+      return "HELP";
+    }
+    if(intentRequestName.equalsIgnoreCase("AMAZON.CancelIntent")){
+      return "CANCEL";
+    }
+    if(intentRequestName.equalsIgnoreCase("AMAZON.StopIntent")){
+      return "STOP";
+    }
+    if(intentRequestName.equalsIgnoreCase("AMAZON.YesIntent")){
+      return "YES";
+    }
+    if(intentRequestName.equalsIgnoreCase("AMAZON.NoIntent")){
+      return "NO";
+    }
+    if(intentRequestName.equalsIgnoreCase("AMAZON.RepeatIntent")){
+      return "REPEAT";
+    }
+    return intentRequestName;
   }
 }

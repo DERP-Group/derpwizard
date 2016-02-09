@@ -2,6 +2,7 @@ package com.derpgroup.derpwizard.voice.util;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +12,8 @@ import static org.junit.Assert.assertNotNull;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.IntentRequest;
+import com.derpgroup.derpwizard.voice.alexa.AlexaUtils;
 import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
-import com.derpgroup.derpwizard.voice.model.AlexaInput;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.ConversationHistoryEntry;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,38 +31,41 @@ public class ConversationHistoryUtilsTest {
   @Test
   public void testAppendToConversationHistory_firstEntry() throws DerpwizardException{
     
-    IntentRequest intentRequest = IntentRequest.builder().withRequestId("123").withIntent(Intent.builder().withName("testSubject").build()).build();
-    AlexaInput alexaInput = new AlexaInput(intentRequest);
+    String subject = "testSubject";
+    IntentRequest intentRequest = IntentRequest.builder().withRequestId("123").withIntent(Intent.builder().withName(subject).build()).build();
+    Map<String, String> messageAsMap = AlexaUtils.getMessageAsMap(intentRequest);
     
-    ConversationHistoryUtils.registerRequestInConversationHistory(alexaInput.getMessageSubject(), alexaInput.getMessageAsMap(), alexaInput.getMetadata(), alexaInput.getMetadata().getConversationHistory());
-    assertNotNull(alexaInput);
-    assertNotNull(alexaInput.getMetadata());
-    assertNotNull(alexaInput.getMetadata().getConversationHistory());
-    assertEquals(1, alexaInput.getMetadata().getConversationHistory().size());
-    assertNotNull(alexaInput.getMetadata().getConversationHistory().peek());
-    assertEquals("testSubject",alexaInput.getMetadata().getConversationHistory().pop().getMessageSubject());
+    CommonMetadata outputMetadata = new CommonMetadata();
+    
+    ConversationHistoryUtils.registerRequestInConversationHistory(subject, messageAsMap, outputMetadata, outputMetadata.getConversationHistory());
+    assertNotNull(outputMetadata);
+    assertNotNull(outputMetadata.getConversationHistory());
+    assertEquals(1, outputMetadata.getConversationHistory().size());
+    assertNotNull(outputMetadata.getConversationHistory().peek());
+    assertEquals(subject,outputMetadata.getConversationHistory().pop().getMessageSubject());
   }
   
   @Test
   public void testAppendToConversationHistory_existingEntry() throws DerpwizardException{
-    CommonMetadata commonMetadata = new CommonMetadata();
+    CommonMetadata outputMetadata = new CommonMetadata();
     ConversationHistoryEntry entry = new ConversationHistoryEntry();
-    entry.setMessageSubject("testSubject1");
+    String subject1 = "testSubject1";
+    entry.setMessageSubject(subject1);
     Deque<ConversationHistoryEntry> conversationHistory = new ArrayDeque<ConversationHistoryEntry>();
     conversationHistory.push(entry);
-    commonMetadata.setConversationHistory(conversationHistory);
+    outputMetadata.setConversationHistory(conversationHistory);
     
-    IntentRequest intentRequest = IntentRequest.builder().withRequestId("123").withIntent(Intent.builder().withName("testSubject2").build()).build();
-    AlexaInput alexaInput = new AlexaInput(intentRequest, commonMetadata);
+    String subject2 = "testSubject2";
+    IntentRequest intentRequest = IntentRequest.builder().withRequestId("123").withIntent(Intent.builder().withName(subject2).build()).build();
+    Map<String, String> messageAsMap = AlexaUtils.getMessageAsMap(intentRequest);
     
-    ConversationHistoryUtils.registerRequestInConversationHistory(alexaInput.getMessageSubject(), alexaInput.getMessageAsMap(), alexaInput.getMetadata(), alexaInput.getMetadata().getConversationHistory());
-    assertNotNull(alexaInput);
-    assertNotNull(alexaInput.getMetadata());
-    assertNotNull(alexaInput.getMetadata().getConversationHistory());
-    assertEquals(2, alexaInput.getMetadata().getConversationHistory().size());
-    assertNotNull(alexaInput.getMetadata().getConversationHistory().peek());
-    assertEquals("testSubject2",alexaInput.getMetadata().getConversationHistory().pop().getMessageSubject());
-    assertNotNull(alexaInput.getMetadata().getConversationHistory().peek());
-    assertEquals("testSubject1",alexaInput.getMetadata().getConversationHistory().pop().getMessageSubject());
+    ConversationHistoryUtils.registerRequestInConversationHistory(subject2, messageAsMap, outputMetadata, outputMetadata.getConversationHistory());
+    assertNotNull(outputMetadata);
+    assertNotNull(outputMetadata.getConversationHistory());
+    assertEquals(2, outputMetadata.getConversationHistory().size());
+    assertNotNull(outputMetadata.getConversationHistory().peek());
+    assertEquals(subject2,outputMetadata.getConversationHistory().pop().getMessageSubject());
+    assertNotNull(outputMetadata.getConversationHistory().peek());
+    assertEquals(subject1,outputMetadata.getConversationHistory().pop().getMessageSubject());
   }
 }
