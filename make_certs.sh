@@ -24,7 +24,7 @@ openssl req -new -x509 -days 365 -key private-key.pem -config selfsigned.cnf -ou
 openssl x509 -outform der -in selfsigned.pem -out selfsigned.crt
 
 # Generate the new keystore
-openssl pkcs12 -export -in selfsigned.pem -inkey private-key.pem -certfile selfsigned.pem -name selfsigned -out keystore.p12 -storepass changeit
+openssl pkcs12 -export -in selfsigned.pem -inkey private-key.pem -certfile selfsigned.pem -name selfsigned -out keystore.p12
 keytool -importkeystore -srckeystore keystore.p12 -srcstoretype pkcs12 -destkeystore keystore.jks -deststoretype JKS -storepass changeit
 
 # Install the keystore
