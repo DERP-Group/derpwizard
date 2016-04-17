@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class MainConfig extends Configuration {
   private boolean prettyPrint = true;
+  private DAOConfig daoConfig;
 
   @JsonProperty
   public boolean isPrettyPrint() {
@@ -41,5 +42,15 @@ public class MainConfig extends Configuration {
   @JsonProperty
   public void setPrettyPrint(boolean prettyPrint) {
     this.prettyPrint = prettyPrint;
+  }
+
+  @JsonProperty
+  public DAOConfig getDaoConfig() {
+    return daoConfig;
+  }
+
+  @JsonProperty
+  public void setDaoConfig(DAOConfig daoConfig) {
+    this.daoConfig = daoConfig;
   }
 }
