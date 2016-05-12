@@ -13,9 +13,9 @@ import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
-import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.derpgroup.derpwizard.dao.UserPreferencesDAO;
 import com.derpgroup.derpwizard.model.preferences.UserPreferences;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,7 +24,6 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
   private ObjectMapper objectMapper;
   private DynamoDB dynamoDB;
   private Table table;
-  private TableDescription tableDescription;
   
   public DynamoUserPreferencesDAO() {
     objectMapper = new ObjectMapper();
@@ -35,22 +34,34 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
     dynamoDB = new DynamoDB(client);
 
     table = dynamoDB.getTable("UserPreferences_Test");
-
-    tableDescription = table.describe();
   }
   
   @Override
   public void setPreferences(UserPreferences userPreferences) {
+    String userPreferencesJson = null;
+    try {
+      userPreferencesJson = objectMapper.writeValueAsString(userPreferences);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
     
+    Item item = Item.fromJSON(userPreferencesJson);
+    table.putItem(item);
   }
   
-  public TableDescription describeTable(){
-    return tableDescription;
+  public <T> void setSkillPreferences(String userId, String skillName, T skillPreferences) {
+    UserPreferences userPreferences = new UserPreferences();
+    userPreferences.setUserId(userId);
+    
+    Map<String, T> preferences = new HashMap<String, T>();
+    preferences.put(skillName, skillPreferences);
+    userPreferences.setPreferences(preferences);
+    
+    setPreferences(userPreferences);
   }
 
   @Override
   public UserPreferences getPreferences(String userId) {
-    
     return queryTable(userId, null);
   }
   
@@ -59,8 +70,7 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
     StringBuilder skillNameFilter = new StringBuilder("preferences.");
     skillNameFilter.append(skillName);
     UserPreferences userPreferences = queryTable(userId, skillNameFilter.toString());
-    Map<String,Object> preferences = userPreferences.getPreferences().get(skillName);
-    T output = objectMapper.convertValue(preferences, type);
+    T output = objectMapper.convertValue(userPreferences.getPreferences().get(skillName), type);
     return output;
   }
   

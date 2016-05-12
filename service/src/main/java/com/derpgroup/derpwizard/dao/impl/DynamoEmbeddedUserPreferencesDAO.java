@@ -1,13 +1,13 @@
 package com.derpgroup.derpwizard.dao.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
+/*import java.util.ArrayList;
 import java.util.List;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;*/
 import com.derpgroup.derpwizard.dao.UserPreferencesDAO;
 import com.derpgroup.derpwizard.model.preferences.UserPreferences;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,9 +16,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DynamoEmbeddedUserPreferencesDAO implements UserPreferencesDAO {
 
   private ObjectMapper objectMapper;
-  private AmazonDynamoDB dynamodb;
+//  private AmazonDynamoDB dynamodb;
   
-  private String tableName = "userPreferences";
+//  private String tableName = "userPreferences";
   
   public DynamoEmbeddedUserPreferencesDAO() {
     objectMapper = new ObjectMapper();
@@ -30,10 +30,10 @@ public class DynamoEmbeddedUserPreferencesDAO implements UserPreferencesDAO {
   }
   
   private void init() {
-    List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
+   /* List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
     List<KeySchemaElement> keySchemaElements = new ArrayList<KeySchemaElement>();
     ProvisionedThroughput provisionedThroughput = new ProvisionedThroughput(25L,25L);
-    dynamodb.createTable(attributeDefinitions, tableName, keySchemaElements, provisionedThroughput);
+    dynamodb.createTable(attributeDefinitions, tableName, keySchemaElements, provisionedThroughput);*/
   }
 
   @Override

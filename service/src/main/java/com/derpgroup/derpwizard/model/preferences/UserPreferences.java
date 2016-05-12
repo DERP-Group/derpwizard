@@ -2,10 +2,13 @@ package com.derpgroup.derpwizard.model.preferences;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class UserPreferences {
 
   private String userId;
-  private Map<String, Map<String,Object>> preferences;
+  private Map<String, ?> preferences;
   
   public String getUserId() {
     return userId;
@@ -15,11 +18,11 @@ public class UserPreferences {
     this.userId = userId;
   }
   
-  public Map<String, Map<String, Object>> getPreferences() {
+  public Map<String, ?> getPreferences() {
     return preferences;
   }
   
-  public void setPreferences(Map<String, Map<String, Object>> preferences) {
+  public void setPreferences(Map<String, ?> preferences) {
     this.preferences = preferences;
   }
 }
