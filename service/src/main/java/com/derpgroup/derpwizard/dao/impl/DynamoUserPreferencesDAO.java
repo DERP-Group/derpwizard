@@ -28,7 +28,7 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
   public DynamoUserPreferencesDAO() {
     objectMapper = new ObjectMapper();
     
-    BasicAWSCredentials creds = new BasicAWSCredentials("AKIAIJ6CEFYHSWPIQRHQ", "rPolRsCo4gH90EOnLEV4AUp/ZfvooEWlkAtOFN6R");
+    BasicAWSCredentials creds = new BasicAWSCredentials("*****", "*****");
     AmazonDynamoDBClient client = new AmazonDynamoDBClient(creds);
     
     dynamoDB = new DynamoDB(client);
