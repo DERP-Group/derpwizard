@@ -73,24 +73,25 @@ public class AlexaUtils {
     
     IntentRequest intentRequest = (IntentRequest) request;
     String intentRequestName = intentRequest.getIntent().getName();
-    if(intentRequestName.equalsIgnoreCase("AMAZON.HelpIntent")){
-      return "HELP";
+    switch(intentRequestName){
+      case "AMAZON.HelpIntent":
+        return "HELP";
+      case "AMAZON.CancelIntent":
+        return "CANCEL";
+      case "AMAZON.StopIntent":
+        return "STOP";
+      case "AMAZON.RepeatIntent":
+        return "REPEAT";
+      case "AMAZON.YesIntent":
+        return "YES";
+      case "AMAZON.NoIntent":
+        return "NO";
+      case "AMAZON.NextIntent":
+        return "NEXT";
+      case "AMAZON.PreviousIntent":
+        return "PREVIOUS";
+      default:
+        return intentRequestName;
     }
-    if(intentRequestName.equalsIgnoreCase("AMAZON.CancelIntent")){
-      return "CANCEL";
-    }
-    if(intentRequestName.equalsIgnoreCase("AMAZON.StopIntent")){
-      return "STOP";
-    }
-    if(intentRequestName.equalsIgnoreCase("AMAZON.YesIntent")){
-      return "YES";
-    }
-    if(intentRequestName.equalsIgnoreCase("AMAZON.NoIntent")){
-      return "NO";
-    }
-    if(intentRequestName.equalsIgnoreCase("AMAZON.RepeatIntent")){
-      return "REPEAT";
-    }
-    return intentRequestName;
   }
 }
