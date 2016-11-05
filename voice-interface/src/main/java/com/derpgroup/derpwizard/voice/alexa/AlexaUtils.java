@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
+import com.amazon.speech.speechlet.LaunchRequest;
+import com.amazon.speech.speechlet.SessionEndedRequest;
 import com.amazon.speech.speechlet.SpeechletRequest;
 import com.amazon.speech.speechlet.authentication.SpeechletRequestSignatureVerifier;
 import com.amazon.speech.speechlet.verifier.TimestampSpeechletRequestVerifier;
@@ -53,5 +55,42 @@ public class AlexaUtils {
     }
 
     return result;
+  }
+  
+  /**
+   * An helper function to map Alexa specific "intents" into platform agnostic subjects.
+   * @param request
+   * @return
+   */
+  public static String getMessageSubject(SpeechletRequest request) {
+    if(request instanceof LaunchRequest){
+      return "START_OF_CONVERSATION";
+    }else if(request instanceof SessionEndedRequest){
+      return "END_OF_CONVERSATION";
+    }else if (!(request instanceof IntentRequest)) {
+      return "";
+    }
+    
+    IntentRequest intentRequest = (IntentRequest) request;
+    String intentRequestName = intentRequest.getIntent().getName();
+    if(intentRequestName.equalsIgnoreCase("AMAZON.HelpIntent")){
+      return "HELP";
+    }
+    if(intentRequestName.equalsIgnoreCase("AMAZON.CancelIntent")){
+      return "CANCEL";
+    }
+    if(intentRequestName.equalsIgnoreCase("AMAZON.StopIntent")){
+      return "STOP";
+    }
+    if(intentRequestName.equalsIgnoreCase("AMAZON.YesIntent")){
+      return "YES";
+    }
+    if(intentRequestName.equalsIgnoreCase("AMAZON.NoIntent")){
+      return "NO";
+    }
+    if(intentRequestName.equalsIgnoreCase("AMAZON.RepeatIntent")){
+      return "REPEAT";
+    }
+    return intentRequestName;
   }
 }
