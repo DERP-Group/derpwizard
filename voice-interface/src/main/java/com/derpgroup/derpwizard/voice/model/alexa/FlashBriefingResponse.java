@@ -4,7 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+
+@SuppressFBWarnings
 public class FlashBriefingResponse {
   
   public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'.0Z'");
