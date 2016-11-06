@@ -174,7 +174,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
 
     String userCreate = "MERGE INTO User(id, firstName) KEY(id) VALUES(?,?);";
     
-    ArrayList<String> parameters = new ArrayList<String>();
+    ArrayList<String> parameters = new ArrayList<>();
     parameters.add(user.getUserId());
     parameters.add(user.getFirstName());
 
@@ -188,7 +188,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
 
     String linkingTokenCreate = "INSERT INTO LinkingToken(userId) VALUES(?);";
 
-    ArrayList<String> parameters = new ArrayList<String>();
+    ArrayList<String> parameters = new ArrayList<>();
     parameters.add(userId);
     executeStatement(linkingTokenCreate, parameters);
     
