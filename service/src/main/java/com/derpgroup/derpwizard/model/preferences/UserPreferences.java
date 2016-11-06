@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class UserPreferences {
 
   private String userId;
-  private Map<String, ?> preferences;
+  protected Map<String, ?> preferences;
   
   public String getUserId() {
     return userId;

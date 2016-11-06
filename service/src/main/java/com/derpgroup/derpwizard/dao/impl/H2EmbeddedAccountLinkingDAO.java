@@ -319,8 +319,11 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
         + " WHERE userId = ?"
         + " AND externalSystemName = ?";
 
-    ResultSet response;
-    response = executeQuery(createAccountLink, parameters);
+    ResultSet response = executeQuery(createAccountLink, parameters);
+    if(response == null){
+      LOG.error("Request to get account link by user id returned a null response.");
+      return null;
+    }
     try{
       if(!response.next()){
         return null;
@@ -345,7 +348,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
 
     ResultSet response = executeQuery(createAccountLink, parameters);
     if(response == null){
-      LOG.error("Request to get account link by id returned a null response.");
+      LOG.error("Request to get account link by external id returned a null response.");
       return null;
     }
     try{
