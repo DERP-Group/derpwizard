@@ -30,6 +30,7 @@ import com.derpgroup.derpwizard.configuration.MainConfig;
 import com.derpgroup.derpwizard.health.BasicHealthCheck;
 import com.derpgroup.derpwizard.resource.AlexaResource;
 import com.derpgroup.derpwizard.resource.HomeResource;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -50,9 +51,12 @@ public class App extends Application<MainConfig> {
 
   @Override
   public void run(MainConfig config, Environment environment) throws IOException {
+    ObjectMapper mapper = environment.getObjectMapper();
     if (config.isPrettyPrint()) {
-      ObjectMapper mapper = environment.getObjectMapper();
       mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
+    if (config.isIgnoreUnknownJsonProperties()) {
+      mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     // Health checks

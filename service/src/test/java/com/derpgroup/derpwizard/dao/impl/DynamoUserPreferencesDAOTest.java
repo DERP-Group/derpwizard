@@ -9,12 +9,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.derpgroup.derpwizard.model.preferences.DerpwizardTestPreferences;
 import com.derpgroup.derpwizard.model.preferences.UserPreferences;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+@Ignore
 public class DynamoUserPreferencesDAOTest {
 
   private DynamoUserPreferencesDAO userPreferencesDAO;
