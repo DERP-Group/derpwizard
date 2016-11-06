@@ -13,6 +13,8 @@ import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
 
 import org.h2.jdbcx.JdbcDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.derpgroup.derpwizard.configuration.AccountLinkingDAOConfig;
 import com.derpgroup.derpwizard.dao.AccountLinkingDAO;
@@ -20,6 +22,8 @@ import com.derpgroup.derpwizard.model.accountlinking.ExternalAccountLink;
 import com.derpgroup.derpwizard.model.accountlinking.UserAccount;
 
 public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
+
+  private static final Logger LOG = LoggerFactory.getLogger(H2EmbeddedAccountLinkingDAO.class);
   
   private Connection conn;
   private JdbcDataSource ds;
@@ -39,8 +43,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
     try {
       init();
     } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error(e.getMessage());
     }
   }
   
@@ -49,7 +52,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
       conn = ds.getConnection();
       setupFixtureData();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
       throw e;
     }
   }
@@ -58,7 +61,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
     try {
       conn.close();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
       throw e;
     }
   }
@@ -82,7 +85,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
         return crs;
       }
     }catch(SQLException e){
-      e.printStackTrace();
+      LOG.error(e.getMessage());
     }
     return null;
   }
@@ -104,7 +107,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
       crs.populate(rs);
       return crs;
     }catch(SQLException e){
-      e.printStackTrace();
+      LOG.error(e.getMessage());
     }
     return null;
   }
@@ -161,7 +164,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
       user.setUserId(response.getString("id"));
       user.setFirstName(response.getString("firstName"));
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
     }
     return user;
   }
@@ -188,20 +191,18 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
     ArrayList<String> parameters = new ArrayList<String>();
     parameters.add(userId);
     executeStatement(linkingTokenCreate, parameters);
-
-    ResultSet response;
+    
     String linkingTokenRetrieve = "SELECT TOP 1 token FROM LinkingToken WHERE userId = ? ORDER BY dateCreated DESC";
     try {
-
       ArrayList<String> retrievalParameters = new ArrayList<String>();
       retrievalParameters.add(userId);
-      response = executeQuery(linkingTokenRetrieve, retrievalParameters);
+      ResultSet response = executeQuery(linkingTokenRetrieve, retrievalParameters);
       if(!response.next()){
         return null;
       }
       return response.getString("token");
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
     }
     return null;
   }
@@ -209,18 +210,17 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
   @Override
   public String getUserIdByMappingToken(String token) {
 
-    ResultSet response;
     String linkingTokenRetrieve = "SELECT TOP 1 userId FROM LinkingToken WHERE token = ? ORDER BY dateCreated DESC";
     try {
       ArrayList<String> parameters = new ArrayList<String>();
       parameters.add(token);
-      response = executeQuery(linkingTokenRetrieve, parameters);
+      ResultSet response = executeQuery(linkingTokenRetrieve, parameters);
       if(response == null || !response.next()){
         return null;
       }
       return response.getString("userId");
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
     }
     return null;
   }
@@ -229,13 +229,9 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
   public void expireMappingToken(String token) {
     String linkingTokenDelete = "DELETE FROM LinkingToken WHERE token = ?;";
 
-//    try {
       ArrayList<String> parameters = new ArrayList<String>();
       parameters.add(token);
       executeStatement(linkingTokenDelete, parameters);
-    /*} catch (SQLException e) {
-      e.printStackTrace();
-    }*/
   }
 
   @Override
@@ -243,25 +239,19 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
 
     String accessTokenCreate = "INSERT INTO Authorization(userId) VALUES(?);";
 
-//    try {
-      ArrayList<String> parameters = new ArrayList<String>();
-      parameters.add(userId);
-      executeStatement(accessTokenCreate, parameters);
-    /*} catch (SQLException e) {
-      e.printStackTrace();
-      return null;
-    }*/
+    ArrayList<String> parameters = new ArrayList<String>();
+    parameters.add(userId);
+    executeStatement(accessTokenCreate, parameters);
 
-    ResultSet response;
     String accessTokenRetrieve = "SELECT TOP 1 token FROM Authorization WHERE userId = ? ORDER BY dateCreated DESC";
     try {
       ArrayList<String> retrievalParameters = new ArrayList<String>();
       retrievalParameters.add(userId);
-      response = executeQuery(accessTokenRetrieve, retrievalParameters);
+      ResultSet response = executeQuery(accessTokenRetrieve, retrievalParameters);
       response.first();
       return response.getString("token");
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
     }
     return null;
   }
@@ -269,18 +259,17 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
   @Override
   public String getUserIdByAuthToken(String token) {
 
-    ResultSet response;
     String accessTokenRetrieve = "SELECT TOP 1 userId FROM Authorization WHERE token = ? ORDER BY dateCreated DESC";
     try {
       ArrayList<String> parameters = new ArrayList<String>();
       parameters.add(token);
-      response = executeQuery(accessTokenRetrieve, parameters);
+      ResultSet response = executeQuery(accessTokenRetrieve, parameters);
       if(!response.next()){
         return null;
       }
       return response.getString("userId");
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
     }
     return null;
   }
@@ -339,7 +328,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
       
       return buildAccountLink(response);
     }catch(SQLException e){
-      e.printStackTrace();
+      LOG.error(e.getMessage());
       return null;
     }
   }
@@ -354,8 +343,11 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
         + " WHERE externalUserId = ?"
         + " AND externalSystemName = ?";
 
-    ResultSet response;
-    response = executeQuery(createAccountLink, parameters);
+    ResultSet response = executeQuery(createAccountLink, parameters);
+    if(response == null){
+      LOG.error("Request to get account link by id returned a null response.");
+      return null;
+    }
     try{
       if(!response.next()){
         return null;
@@ -363,7 +355,7 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
       
       return buildAccountLink(response);
     }catch(SQLException e){
-      e.printStackTrace();
+      LOG.error(e.getMessage());
       return null;
     }
   }
@@ -376,16 +368,19 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
         + " FROM AccountLink"
         + " WHERE userId = ?";
 
-    ResultSet response;
-    response = executeQuery(createAccountLink, parameters);
-    
+
+    ResultSet response = executeQuery(createAccountLink, parameters);
+    if(response == null){
+      LOG.error("Request to get account links returned a null response.");
+      return null;
+    }
     List<ExternalAccountLink> externalAccountLinks = new LinkedList<ExternalAccountLink>();
     try{
       while(response.next()){
         externalAccountLinks.add(buildAccountLink(response));
       }
     }catch(SQLException e){
-      e.printStackTrace();
+      LOG.error(e.getMessage());
       return null;
     }
     

@@ -12,8 +12,9 @@ public class AccountLinkingDAOFactory {
       dao = new H2EmbeddedAccountLinkingDAO(config);
       break;
       default:
-        throw new RuntimeException("Unsupported AccounTLinkingDAO type.");
+        throw new RuntimeException("Unsupported AccountLinkingDAO type.");
     }
     return dao;
   }
+  
 }

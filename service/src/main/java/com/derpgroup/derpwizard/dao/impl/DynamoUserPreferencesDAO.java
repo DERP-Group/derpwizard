@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
@@ -20,6 +23,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
+
+  private static final Logger LOG = LoggerFactory.getLogger(DynamoUserPreferencesDAO.class);
 
   private ObjectMapper objectMapper;
   private DynamoDB dynamoDB;
@@ -42,7 +47,7 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
     try {
       userPreferencesJson = objectMapper.writeValueAsString(userPreferences);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
     }
     
     Item item = Item.fromJSON(userPreferencesJson);
@@ -84,7 +89,7 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
     try {
       return objectMapper.readValue(item.toJSON(), new TypeReference<UserPreferences>(){});
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
       return null;
     }
   }
@@ -96,7 +101,7 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
     try {
       return objectMapper.readValue(outcome.getItem().toJSON(), new TypeReference<UserPreferences>(){});
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
       return null;
     }
   }
