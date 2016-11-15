@@ -30,17 +30,19 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
   private DynamoDB dynamoDB;
   private Table table;
   
-  public DynamoUserPreferencesDAO() {
+  private String defaultNamespace;
+  
+  protected DynamoUserPreferencesDAO(String accessKey, String secretKey, String tableName) {
     objectMapper = new ObjectMapper();
     
-    BasicAWSCredentials creds = new BasicAWSCredentials("*****", "*****");
+    BasicAWSCredentials creds = new BasicAWSCredentials(accessKey, secretKey);
     AmazonDynamoDBClient client = new AmazonDynamoDBClient(creds);
     
     dynamoDB = new DynamoDB(client);
 
-    table = dynamoDB.getTable("UserPreferences_Test");
+    table = dynamoDB.getTable(tableName);
   }
-  
+
   @Override
   public void setPreferences(UserPreferences userPreferences) {
     String userPreferencesJson = null;
@@ -53,8 +55,14 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
     Item item = Item.fromJSON(userPreferencesJson);
     table.putItem(item);
   }
+
+  @Override
+  public <T> void setPreferencesForDefaultNamespace(String userId, T skillPreferences) {
+    setPreferencesByNamespace(userId, defaultNamespace, skillPreferences);
+  }
   
-  public <T> void setSkillPreferences(String userId, String skillName, T skillPreferences) {
+  @Override
+  public <T> void setPreferencesByNamespace(String userId, String skillName, T skillPreferences) {
     UserPreferences userPreferences = new UserPreferences();
     userPreferences.setUserId(userId);
     
@@ -69,13 +77,27 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
   public UserPreferences getPreferences(String userId) {
     return queryTable(userId, null);
   }
+
+  @Override
+  public <T> T getPreferencesForDefaultNamespace(String userId, TypeReference<T> type) {
+    return getPreferencesByNamespace(userId, defaultNamespace, type);
+  }
   
   @Override
-  public <T> T getPreferencesBySkillName(String userId, String skillName, TypeReference<T> type){
-    StringBuilder skillNameFilter = new StringBuilder("preferences.");
-    skillNameFilter.append(skillName);
-    UserPreferences userPreferences = queryTable(userId, skillNameFilter.toString());
-    T output = objectMapper.convertValue(userPreferences.getPreferences().get(skillName), type);
+  public <T> T getPreferencesByNamespace(String userId, String namespace, TypeReference<T> type){
+    if(userId == null){
+      throw new IllegalArgumentException("Could not retrieve preferences for null userId");
+    }
+    if(namespace == null){
+      throw new IllegalArgumentException("Could not retrieve preferences for null namespace");
+    }
+    StringBuilder namespaceFilter = new StringBuilder("preferences.");
+    namespaceFilter.append(namespace);
+    UserPreferences userPreferences = queryTable(userId, namespaceFilter.toString());
+    if(userPreferences == null || userPreferences.getPreferences() == null){
+      return null;
+    }
+    T output = objectMapper.convertValue(userPreferences.getPreferences().get(namespace), type);
     return output;
   }
   
@@ -104,5 +126,13 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
       LOG.error(e.getMessage());
       return null;
     }
+  }
+
+  public String getDefaultServiceName() {
+    return defaultNamespace;
+  }
+
+  public void setNamespace(String defaultServiceName) {
+    this.defaultNamespace = defaultServiceName;
   }
 }

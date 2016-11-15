@@ -53,10 +53,31 @@ public class DynamoEmbeddedUserPreferencesDAO implements UserPreferencesDAO {
   }
 
   @Override
-  public <T> T getPreferencesBySkillName(String userId, String skillName,
+  public <T> T getPreferencesByNamespace(String userId, String skillName,
       TypeReference<T> type) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public <T> T getPreferencesForDefaultNamespace(String userId,
+      TypeReference<T> type) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public <T> void setPreferencesForDefaultNamespace(String userId,
+      T skillPreferences) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public <T> void setPreferencesByNamespace(String userId, String skillName,
+      T skillPreferences) {
+    // TODO Auto-generated method stub
+    
   }
 
 }

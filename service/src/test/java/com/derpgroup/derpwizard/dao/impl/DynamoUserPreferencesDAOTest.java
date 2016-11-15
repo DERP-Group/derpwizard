@@ -25,7 +25,7 @@ public class DynamoUserPreferencesDAOTest {
   @Before
   public void setup(){
     userId = UUID.randomUUID().toString();
-    userPreferencesDAO = new DynamoUserPreferencesDAO();
+    userPreferencesDAO = new DynamoUserPreferencesDAO("******","******","UserPreferences_Test");
   }
   
   @SuppressWarnings("unchecked")
@@ -58,7 +58,7 @@ public class DynamoUserPreferencesDAOTest {
      
   @Test
   public void testGetPreferencesBySkillName(){
-    userPreferencesDAO.getPreferencesBySkillName("fake", "DERPWIZARD", new TypeReference<DerpwizardTestPreferences>(){});
+    userPreferencesDAO.getPreferencesByNamespace("fake", "DERPWIZARD", new TypeReference<DerpwizardTestPreferences>(){});
   }
   
   @SuppressWarnings("unchecked")

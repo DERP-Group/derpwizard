@@ -32,9 +32,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class MainConfig extends Configuration {
   
-  private boolean ignoreUnknownJsonProperties = true;
-  private boolean prettyPrint = true;
-  private DAOConfig daoConfig;
+  protected boolean ignoreUnknownJsonProperties = true;
+  protected boolean prettyPrint = true;
+  /*protected DAOConfig daoConfig;*/ //What a DAO config would look like in a sample project
 
   public boolean isIgnoreUnknownJsonProperties() {
     return ignoreUnknownJsonProperties;
@@ -55,7 +55,7 @@ public class MainConfig extends Configuration {
     this.prettyPrint = prettyPrint;
   }
 
-  @JsonProperty
+  /*@JsonProperty
   public DAOConfig getDaoConfig() {
     return daoConfig;
   }
@@ -63,5 +63,5 @@ public class MainConfig extends Configuration {
   @JsonProperty
   public void setDaoConfig(DAOConfig daoConfig) {
     this.daoConfig = daoConfig;
-  }
+  }*/
 }

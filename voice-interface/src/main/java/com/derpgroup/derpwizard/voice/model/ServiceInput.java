@@ -7,6 +7,7 @@ public class ServiceInput {
   private CommonMetadata metadata;
   private Map<String, String> messageAsMap;
   private String subject;
+  private String userId;
 
   public CommonMetadata getMetadata() {return metadata;}
   public void setMetadata(CommonMetadata metadata) {this.metadata = metadata;}
@@ -14,4 +15,6 @@ public class ServiceInput {
   public void setMessageAsMap(Map<String, String> messageAsMap) {this.messageAsMap = messageAsMap;}
   public String getSubject() {return subject;}
   public void setSubject(String subject) {this.subject = subject;}
+  public String getUserId() {return userId;}
+  public void setUserId(String userId) {this.userId = userId;}
 }

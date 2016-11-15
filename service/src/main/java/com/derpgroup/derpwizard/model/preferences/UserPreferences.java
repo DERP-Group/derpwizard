@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class UserPreferences {
 
-  private String userId;
+  protected String userId;
   protected Map<String, ?> preferences;
   
   public String getUserId() {
