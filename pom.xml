@@ -9,6 +9,7 @@
   <modules>
     <module>voice-interface</module>
     <module>service</module>
+    <module>persistence</module>
   </modules>
 
   <properties>
