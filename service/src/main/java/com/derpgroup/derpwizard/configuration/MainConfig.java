@@ -31,8 +31,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 0.0.1
  */
 public class MainConfig extends Configuration {
+  
+  private boolean ignoreUnknownJsonProperties = true;
   private boolean prettyPrint = true;
   private DAOConfig daoConfig;
+
+  public boolean isIgnoreUnknownJsonProperties() {
+    return ignoreUnknownJsonProperties;
+  }
+
+  public void setIgnoreUnknownJsonProperties(
+      boolean ignoreUnknownJsonProperties) {
+    this.ignoreUnknownJsonProperties = ignoreUnknownJsonProperties;
+  }
 
   @JsonProperty
   public boolean isPrettyPrint() {

@@ -8,13 +8,18 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
+import com.amazon.speech.json.SpeechletResponseEnvelope;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.SessionEndedRequest;
 import com.amazon.speech.speechlet.SpeechletRequest;
+import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.speechlet.authentication.SpeechletRequestSignatureVerifier;
 import com.amazon.speech.speechlet.verifier.TimestampSpeechletRequestVerifier;
+import com.amazon.speech.ui.Card;
+import com.amazon.speech.ui.OutputSpeech;
+import com.amazon.speech.ui.Reprompt;
 import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
 import com.derpgroup.derpwizard.voice.exception.DerpwizardException.DerpwizardExceptionReasons;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -93,5 +98,22 @@ public class AlexaUtils {
       default:
         return intentRequestName;
     }
+  }
+  
+  public static SpeechletResponseEnvelope buildOutput(OutputSpeech outputSpeech, Card card, Reprompt reprompt, boolean shouldEndSession, Map<String,Object> sessionAttributes){
+    SpeechletResponseEnvelope responseEnvelope = new SpeechletResponseEnvelope();
+    
+    SpeechletResponse speechletResponse = new SpeechletResponse();
+
+    speechletResponse.setOutputSpeech(outputSpeech);
+    speechletResponse.setCard(card);
+    speechletResponse.setReprompt(reprompt);
+    speechletResponse.setShouldEndSession(shouldEndSession);
+    
+    responseEnvelope.setResponse(speechletResponse);
+    
+    responseEnvelope.setSessionAttributes(sessionAttributes);
+
+    return responseEnvelope;
   }
 }
