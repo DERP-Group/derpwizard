@@ -47,12 +47,6 @@
 		<artifactId>aws-java-sdk-dynamodb</artifactId>
 		<version>1.10.69</version>
 	</dependency>
-    
-    <dependency>
-	    <groupId>com.google.code.findbugs</groupId>
-	    <artifactId>findbugs</artifactId>
-	    <version>3.0.1</version>
-	</dependency>
   </dependencies>
 
   <build>
@@ -128,22 +122,6 @@
           <source>${project.build.jdkVersion}</source>
           <target>${project.build.jdkVersion}</target>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>check-jar-with-findbugs</id>
-            <phase>test</phase>
-            <goals>
-              <goal>findbugs</goal>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
