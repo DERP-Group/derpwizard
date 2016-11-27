@@ -1,5 +1,9 @@
 package com._3po_labs.derpwizard.persistence.model.accountlinking;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class ExternalAccountLink {
 
   private String userId;

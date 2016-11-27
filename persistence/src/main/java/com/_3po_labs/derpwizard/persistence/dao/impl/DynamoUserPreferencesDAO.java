@@ -32,7 +32,7 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
   
   private String defaultNamespace;
   
-  protected DynamoUserPreferencesDAO(String accessKey, String secretKey, String tableName) {
+  public DynamoUserPreferencesDAO(String accessKey, String secretKey, String tableName) {
     objectMapper = new ObjectMapper();
     
     BasicAWSCredentials creds = new BasicAWSCredentials(accessKey, secretKey);

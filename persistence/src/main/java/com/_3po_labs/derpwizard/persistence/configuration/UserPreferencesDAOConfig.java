@@ -2,7 +2,7 @@ package com._3po_labs.derpwizard.persistence.configuration;
 
 import javax.validation.constraints.NotNull;
 
-import com._3po_labs.derpwizard.persistence.dao.impl.UserPreferencesDAOFactory.UserPreferencesDAOTypes;
+import com._3po_labs.derpwizard.persistence.dao.factory.UserPreferencesDAOFactory.UserPreferencesDAOTypes;
 
 public class UserPreferencesDAOConfig {
 

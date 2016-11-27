@@ -11,6 +11,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.derpgroup.derpwizard</groupId>
+			<artifactId>derpwizard-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.191</version>
@@ -20,11 +25,16 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.13</version>
 		</dependency>
-    <dependency>
-		<groupId>com.amazonaws</groupId>
-		<artifactId>aws-java-sdk-dynamodb</artifactId>
-		<version>1.10.69</version>
-	</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-dynamodb</artifactId>
+			<version>1.10.69</version>
+		</dependency>
+		<dependency>
+    		<groupId>joda-time</groupId>
+		    <artifactId>joda-time</artifactId>
+		    <version>2.9</version>
+		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
