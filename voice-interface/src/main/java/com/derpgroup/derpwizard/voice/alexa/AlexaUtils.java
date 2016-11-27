@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+import com._3po_labs.derpwizard.core.exception.DerpwizardException;
+import com._3po_labs.derpwizard.core.exception.DerpwizardException.DerpwizardExceptionReasons;
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
 import com.amazon.speech.slu.Slot;
@@ -20,8 +22,6 @@ import com.amazon.speech.speechlet.verifier.TimestampSpeechletRequestVerifier;
 import com.amazon.speech.ui.Card;
 import com.amazon.speech.ui.OutputSpeech;
 import com.amazon.speech.ui.Reprompt;
-import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
-import com.derpgroup.derpwizard.voice.exception.DerpwizardException.DerpwizardExceptionReasons;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -1,6 +1,5 @@
-package com.derpgroup.derpwizard.voice.exception;
+package com._3po_labs.derpwizard.core.exception;
 
-import com.derpgroup.derpwizard.voice.model.SsmlDocumentBuilder;
 
 public class DerpwizardException extends Exception {
 
@@ -10,7 +9,7 @@ public class DerpwizardException extends Exception {
   private String shortFormTextMessage;
 
   public DerpwizardException(String message){ //Given a single input, we make no "ssml" distinction.  It's just "the message"
-    this(new SsmlDocumentBuilder().text(message).build().getSsml(), message);
+    this(message, message);
   }
   
   public DerpwizardException(String ssmlMessage, String fullTextMessage){ //If no shortForm supplied, copy fullText message

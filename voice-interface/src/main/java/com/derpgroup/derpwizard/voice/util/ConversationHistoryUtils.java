@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
+import com._3po_labs.derpwizard.core.exception.DerpwizardException;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.ConversationHistoryEntry;
 import com.fasterxml.jackson.core.type.TypeReference;

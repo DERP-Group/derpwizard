@@ -9,6 +9,11 @@
   <packaging>jar</packaging>
 
   <dependencies>
+	<dependency>
+		<groupId>com.derpgroup.derpwizard</groupId>
+		<artifactId>derpwizard-core</artifactId>
+		<version>${project.version}</version>
+	</dependency>
     <dependency>
       <groupId>com.amazon.alexa</groupId>
       <artifactId>alexa-skills-kit</artifactId>

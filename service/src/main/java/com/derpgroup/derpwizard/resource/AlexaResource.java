@@ -39,6 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com._3po_labs.derpwizard.core.configuration.MainConfig;
+import com._3po_labs.derpwizard.core.exception.DerpwizardException;
+import com._3po_labs.derpwizard.core.exception.DerpwizardException.DerpwizardExceptionReasons;
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
 import com.amazon.speech.speechlet.SpeechletRequest;
@@ -47,8 +49,6 @@ import com.amazon.speech.ui.SimpleCard;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.derpgroup.derpwizard.manager.DerpWizardManager;
 import com.derpgroup.derpwizard.voice.alexa.AlexaUtils;
-import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
-import com.derpgroup.derpwizard.voice.exception.DerpwizardException.DerpwizardExceptionReasons;
 import com.derpgroup.derpwizard.voice.exception.DerpwizardExceptionAlexaWrapper;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.ServiceInput;
