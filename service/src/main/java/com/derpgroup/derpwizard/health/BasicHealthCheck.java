@@ -22,8 +22,8 @@ package com.derpgroup.derpwizard.health;
 
 import io.dropwizard.setup.Environment;
 
+import com._3po_labs.derpwizard.core.configuration.MainConfig;
 import com.codahale.metrics.health.HealthCheck;
-import com.derpgroup.derpwizard.configuration.MainConfig;
 
 /**
  * Health check to verify that the local filesystem is writable.

@@ -26,7 +26,7 @@ import io.dropwizard.setup.Environment;
 
 import java.io.IOException;
 
-import com.derpgroup.derpwizard.configuration.MainConfig;
+import com._3po_labs.derpwizard.core.configuration.MainConfig;
 import com.derpgroup.derpwizard.health.BasicHealthCheck;
 import com.derpgroup.derpwizard.resource.AlexaResource;
 import com.derpgroup.derpwizard.resource.HomeResource;

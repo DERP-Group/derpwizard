@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.derpgroup.derpwizard.configuration.MainConfig;
+import com._3po_labs.derpwizard.core.configuration.MainConfig;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HomeResourceTest {

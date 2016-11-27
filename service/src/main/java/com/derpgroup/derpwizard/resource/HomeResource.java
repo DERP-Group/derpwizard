@@ -30,7 +30,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.derpgroup.derpwizard.configuration.MainConfig;
+import com._3po_labs.derpwizard.core.configuration.MainConfig;
 import com.google.common.collect.ImmutableMap;
 
 /**
