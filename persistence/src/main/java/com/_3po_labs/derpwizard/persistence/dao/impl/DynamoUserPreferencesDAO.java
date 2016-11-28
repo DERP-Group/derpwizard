@@ -106,7 +106,7 @@ public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
     if(item == null){
       return createUserRecord(userId);
     }
-    System.out.println(item.toJSONPretty().toString());
+    LOG.debug(item.toJSONPretty().toString());
     
     try {
       return objectMapper.readValue(item.toJSON(), new TypeReference<UserPreferences>(){});

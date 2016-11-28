@@ -1,7 +1,6 @@
 package com._3po_labs.derpwizard.persistence.dao.impl;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,20 +8,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com._3po_labs.derpwizard.core.exception.DerpwizardException;
+import com._3po_labs.derpwizard.persistence.configuration.AccountLinkingDAOConfig;
 import com._3po_labs.derpwizard.persistence.dao.AccountLinkingDAO;
 import com._3po_labs.derpwizard.persistence.model.accountlinking.ExternalAccountLink;
 import com._3po_labs.derpwizard.persistence.model.accountlinking.UserAccount;
-import com._3po_labs.derpwizard.persistence.model.preferences.UserPreferences;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
-import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.ScanOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
-import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,6 +32,10 @@ public class DynamoAccountLinkingDAO implements AccountLinkingDAO {
 	private ObjectMapper mapper;
 	private DynamoDB dynamoDB;
 	private Table table;
+	
+	public DynamoAccountLinkingDAO(AccountLinkingDAOConfig config){
+		this(config.getAccessKey(), config.getSecretKey(), config.getTableName());
+	}
 
 	public DynamoAccountLinkingDAO(String accessKey, String secretKey, String tableName) {
 	    mapper = new ObjectMapper();
@@ -134,8 +134,6 @@ public class DynamoAccountLinkingDAO implements AccountLinkingDAO {
 	}
 
 	public ExternalAccountLink queryTable(String filterExpression, ValueMap valueMap) throws DerpwizardException {
-		System.out.println("FilterExpression: " + filterExpression);
-		System.out.println(valueMap.toString());
 		
 		ScanSpec scanSpec = new ScanSpec().withFilterExpression(filterExpression).withValueMap(valueMap);
 		ItemCollection<ScanOutcome> items = table.scan(scanSpec);
@@ -148,7 +146,7 @@ public class DynamoAccountLinkingDAO implements AccountLinkingDAO {
 			if(iter.hasNext()){
 				item = iter.next();
 			}else{
-				throw new DerpwizardException("NO NEXT");
+				return null;
 			}
 		}
 

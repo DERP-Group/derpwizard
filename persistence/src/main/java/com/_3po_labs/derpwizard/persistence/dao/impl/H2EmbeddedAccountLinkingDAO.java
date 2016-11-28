@@ -28,7 +28,8 @@ public class H2EmbeddedAccountLinkingDAO implements AccountLinkingDAO {
   private Connection conn;
   private JdbcDataSource ds;
   
-  public H2EmbeddedAccountLinkingDAO(AccountLinkingDAOConfig config){
+  @SuppressWarnings("deprecation")
+public H2EmbeddedAccountLinkingDAO(AccountLinkingDAOConfig config){
     if(config == null || config.getProperties() == null){
       throw new RuntimeException("Could not initialize DAO due to missing configuration.");
     }

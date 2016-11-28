@@ -26,7 +26,8 @@ public class H2EmbeddedAccountLinkingDAOTest {
   private H2EmbeddedAccountLinkingDAO dao;
   private AccountLinkingDAOConfig accountLinkingDAOConfig;
   
-  @Before
+  @SuppressWarnings("deprecation")
+@Before
   public void setup() throws SQLException{
     HashMap<String,Object> properties = new HashMap<String,Object>();
     properties.put("url", "jdbc:h2:mem:");
