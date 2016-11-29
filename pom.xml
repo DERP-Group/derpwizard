@@ -10,7 +10,7 @@
     <module>voice-interface</module>
     <module>service</module>
     <module>persistence</module>
-    <module>derpwizard-core</module>
+    <module>core</module>
   </modules>
 
   <properties>
@@ -132,6 +132,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.2</version>
+        <configuration>
+        	<source>${project.build.jdkVersion}</source>
+        	<target>${project.build.jdkVersion}</target>
+        </configuration>
       </plugin>
 
       <plugin>

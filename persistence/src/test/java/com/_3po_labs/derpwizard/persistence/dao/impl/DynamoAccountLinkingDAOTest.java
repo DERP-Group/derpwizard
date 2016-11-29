@@ -6,11 +6,13 @@ import static org.junit.Assert.assertNotNull;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com._3po_labs.derpwizard.core.exception.DerpwizardException;
 import com._3po_labs.derpwizard.persistence.model.accountlinking.ExternalAccountLink;
 
+@Ignore
 public class DynamoAccountLinkingDAOTest {
 
 	  private DynamoAccountLinkingDAO accountLinkingDAO;
