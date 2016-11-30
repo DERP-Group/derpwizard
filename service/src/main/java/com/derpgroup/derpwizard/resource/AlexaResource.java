@@ -75,8 +75,11 @@ public class AlexaResource {
   private static final String ALEXA_VERSION = "1.1.1";
 
   private DerpWizardManager manager;
+  
+  private MainConfig config;
 
   public AlexaResource(MainConfig config, Environment env) {
+    this.config = config;
     manager = new DerpWizardManager();
   }
 
@@ -95,7 +98,7 @@ public class AlexaResource {
       if (request.getRequest() == null) {
         throw new DerpwizardException(DerpwizardExceptionReasons.MISSING_INFO.getSsml(),"Missing request body."); //TODO: create AlexaException
       }
-      if(testFlag == null || testFlag == false){ 
+      if(config.isValidateAlexaRequests() && (testFlag == null || testFlag == false)){ 
         AlexaUtils.validateAlexaRequest(request, signatureCertChainUrl, signature);
       }
       

@@ -31,37 +31,43 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 0.0.1
  */
 public class MainConfig extends Configuration {
-  
-  protected boolean ignoreUnknownJsonProperties = true;
-  protected boolean prettyPrint = true;
-  /*protected DAOConfig daoConfig;*/ //What a DAO config would look like in a sample project
 
-  public boolean isIgnoreUnknownJsonProperties() {
-    return ignoreUnknownJsonProperties;
-  }
+	protected boolean ignoreUnknownJsonProperties = true;
+	protected boolean prettyPrint = true;
+	protected boolean validateAlexaRequests = true;
+	/* protected DAOConfig daoConfig; */ // What a DAO config would look like in
+											// a sample project
 
-  public void setIgnoreUnknownJsonProperties(
-      boolean ignoreUnknownJsonProperties) {
-    this.ignoreUnknownJsonProperties = ignoreUnknownJsonProperties;
-  }
+	public boolean isIgnoreUnknownJsonProperties() {
+		return ignoreUnknownJsonProperties;
+	}
 
-  @JsonProperty
-  public boolean isPrettyPrint() {
-    return prettyPrint;
-  }
+	public void setIgnoreUnknownJsonProperties(boolean ignoreUnknownJsonProperties) {
+		this.ignoreUnknownJsonProperties = ignoreUnknownJsonProperties;
+	}
 
-  @JsonProperty
-  public void setPrettyPrint(boolean prettyPrint) {
-    this.prettyPrint = prettyPrint;
-  }
+	@JsonProperty
+	public boolean isPrettyPrint() {
+		return prettyPrint;
+	}
 
-  /*@JsonProperty
-  public DAOConfig getDaoConfig() {
-    return daoConfig;
-  }
+	@JsonProperty
+	public void setPrettyPrint(boolean prettyPrint) {
+		this.prettyPrint = prettyPrint;
+	}
 
-  @JsonProperty
-  public void setDaoConfig(DAOConfig daoConfig) {
-    this.daoConfig = daoConfig;
-  }*/
+	public boolean isValidateAlexaRequests() {
+		return validateAlexaRequests;
+	}
+
+	public void setValidateAlexaRequests(boolean validateAlexaRequests) {
+		this.validateAlexaRequests = validateAlexaRequests;
+	}
+
+	/*
+	 * @JsonProperty public DAOConfig getDaoConfig() { return daoConfig; }
+	 * 
+	 * @JsonProperty public void setDaoConfig(DAOConfig daoConfig) {
+	 * this.daoConfig = daoConfig; }
+	 */
 }
