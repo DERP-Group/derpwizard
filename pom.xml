@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.derpgroup.derpwizard</groupId>
   <artifactId>derpwizard-project</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.4-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>DERP Wizard</name>
 
