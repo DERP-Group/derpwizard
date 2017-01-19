@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.derpgroup.derpwizard</groupId>
     <artifactId>derpwizard-project</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3</version>
   </parent>
   <artifactId>derpwizard-service</artifactId>
   <packaging>jar</packaging>
