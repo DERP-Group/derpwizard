@@ -6,53 +6,53 @@ import com._3po_labs.derpwizard.persistence.dao.factory.UserPreferencesDAOFactor
 
 public class UserPreferencesDAOConfig {
 
-  @NotNull
-  private String accessKey;
-  @NotNull
-  private String secretKey;
-  @NotNull
-  private String tableName;
-  private String namespace;
-  @NotNull
-  private UserPreferencesDAOTypes type;
-  
-  public String getAccessKey() {
-    return accessKey;
-  }
-  
-  public void setAccessKey(String accessKey) {
-    this.accessKey = accessKey;
-  }
+	@NotNull
+	private String accessKey;
+	@NotNull
+	private String secretKey;
+	@NotNull
+	private String tableName;
+	private String namespace;
+	@NotNull
+	private UserPreferencesDAOTypes type;
 
-  public String getSecretKey() {
-    return secretKey;
-  }
+	public String getAccessKey() {
+		return accessKey;
+	}
 
-  public void setSecretKey(String secretKey) {
-    this.secretKey = secretKey;
-  }
+	public void setAccessKey(String accessKey) {
+		this.accessKey = accessKey;
+	}
 
-  public String getTableName() {
-    return tableName;
-  }
+	public String getSecretKey() {
+		return secretKey;
+	}
 
-  public void setTableName(String tableName) {
-    this.tableName = tableName;
-  }
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
+	}
 
-  public String getNamespace() {
-    return namespace;
-  }
+	public String getTableName() {
+		return tableName;
+	}
 
-  public void setNamespace(String namespace) {
-    this.namespace = namespace;
-  }
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
 
-  public UserPreferencesDAOTypes getType() {
-    return type;
-  }
+	public String getNamespace() {
+		return namespace;
+	}
 
-  public void setType(UserPreferencesDAOTypes type) {
-    this.type = type;
-  }
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
+
+	public UserPreferencesDAOTypes getType() {
+		return type;
+	}
+
+	public void setType(UserPreferencesDAOTypes type) {
+		this.type = type;
+	}
 }

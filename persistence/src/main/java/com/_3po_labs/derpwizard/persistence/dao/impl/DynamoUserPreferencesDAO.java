@@ -24,115 +24,115 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DynamoUserPreferencesDAO implements UserPreferencesDAO {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DynamoUserPreferencesDAO.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DynamoUserPreferencesDAO.class);
 
-  private ObjectMapper objectMapper;
-  private DynamoDB dynamoDB;
-  private Table table;
-  
-  private String defaultNamespace;
-  
-  public DynamoUserPreferencesDAO(String accessKey, String secretKey, String tableName) {
-    objectMapper = new ObjectMapper();
-    
-    BasicAWSCredentials creds = new BasicAWSCredentials(accessKey, secretKey);
-    AmazonDynamoDBClient client = new AmazonDynamoDBClient(creds);
-    
-    dynamoDB = new DynamoDB(client);
+	private ObjectMapper objectMapper;
+	private DynamoDB dynamoDB;
+	private Table table;
 
-    table = dynamoDB.getTable(tableName);
-  }
+	private String defaultNamespace;
 
-  @Override
-  public void setPreferences(UserPreferences userPreferences) {
-    String userPreferencesJson = null;
-    try {
-      userPreferencesJson = objectMapper.writeValueAsString(userPreferences);
-    } catch (JsonProcessingException e) {
-      LOG.error(e.getMessage());
-    }
-    
-    Item item = Item.fromJSON(userPreferencesJson);
-    table.putItem(item);
-  }
+	public DynamoUserPreferencesDAO(String accessKey, String secretKey, String tableName) {
+		objectMapper = new ObjectMapper();
 
-  @Override
-  public <T> void setPreferencesForDefaultNamespace(String userId, T skillPreferences) {
-    setPreferencesByNamespace(userId, defaultNamespace, skillPreferences);
-  }
-  
-  @Override
-  public <T> void setPreferencesByNamespace(String userId, String skillName, T skillPreferences) {
-    UserPreferences userPreferences = new UserPreferences();
-    userPreferences.setUserId(userId);
-    
-    Map<String, T> preferences = new HashMap<String, T>();
-    preferences.put(skillName, skillPreferences);
-    userPreferences.setPreferences(preferences);
-    
-    setPreferences(userPreferences);
-  }
+		BasicAWSCredentials creds = new BasicAWSCredentials(accessKey, secretKey);
+		AmazonDynamoDBClient client = new AmazonDynamoDBClient(creds);
 
-  @Override
-  public UserPreferences getPreferences(String userId) {
-    return queryTable(userId, null);
-  }
+		dynamoDB = new DynamoDB(client);
 
-  @Override
-  public <T> T getPreferencesForDefaultNamespace(String userId, TypeReference<T> type) {
-    return getPreferencesByNamespace(userId, defaultNamespace, type);
-  }
-  
-  @Override
-  public <T> T getPreferencesByNamespace(String userId, String namespace, TypeReference<T> type){
-    if(userId == null){
-      throw new IllegalArgumentException("Could not retrieve preferences for null userId");
-    }
-    if(namespace == null){
-      throw new IllegalArgumentException("Could not retrieve preferences for null namespace");
-    }
-    StringBuilder namespaceFilter = new StringBuilder("preferences.");
-    namespaceFilter.append(namespace);
-    UserPreferences userPreferences = queryTable(userId, namespaceFilter.toString());
-    if(userPreferences == null || userPreferences.getPreferences() == null){
-      return null;
-    }
-    T output = objectMapper.convertValue(userPreferences.getPreferences().get(namespace), type);
-    return output;
-  }
-  
-  public UserPreferences queryTable(String userId,String filterExpression){
-    Item item = table.getItem("userId", userId, filterExpression,null);
-    if(item == null){
-      return createUserRecord(userId);
-    }
-    LOG.debug(item.toJSONPretty().toString());
-    
-    try {
-      return objectMapper.readValue(item.toJSON(), new TypeReference<UserPreferences>(){});
-    } catch (IOException e) {
-      LOG.error(e.getMessage());
-      return null;
-    }
-  }
-  
-  public UserPreferences createUserRecord(String userId){
-    ValueMap vm = new ValueMap().withMap(":val1", new HashMap<String,Object>());
-    UpdateItemSpec spec = new UpdateItemSpec().withPrimaryKey("userId", userId).withUpdateExpression("set preferences = :val1").withValueMap(vm).withReturnValues(ReturnValue.ALL_NEW);
-    UpdateItemOutcome outcome = table.updateItem(spec);
-    try {
-      return objectMapper.readValue(outcome.getItem().toJSON(), new TypeReference<UserPreferences>(){});
-    } catch (IOException e) {
-      LOG.error(e.getMessage());
-      return null;
-    }
-  }
+		table = dynamoDB.getTable(tableName);
+	}
 
-  public String getDefaultServiceName() {
-    return defaultNamespace;
-  }
+	@Override
+	public void setPreferences(UserPreferences userPreferences) {
+		String userPreferencesJson = null;
+		try {
+			userPreferencesJson = objectMapper.writeValueAsString(userPreferences);
+		} catch (JsonProcessingException e) {
+			LOG.error(e.getMessage());
+		}
 
-  public void setNamespace(String defaultServiceName) {
-    this.defaultNamespace = defaultServiceName;
-  }
+		Item item = Item.fromJSON(userPreferencesJson);
+		table.putItem(item);
+	}
+
+	@Override
+	public <T> void setPreferencesForDefaultNamespace(String userId, T skillPreferences) {
+		setPreferencesByNamespace(userId, defaultNamespace, skillPreferences);
+	}
+
+	@Override
+	public <T> void setPreferencesByNamespace(String userId, String skillName, T skillPreferences) {
+		UserPreferences userPreferences = new UserPreferences();
+		userPreferences.setUserId(userId);
+
+		Map<String, T> preferences = new HashMap<String, T>();
+		preferences.put(skillName, skillPreferences);
+		userPreferences.setPreferences(preferences);
+
+		setPreferences(userPreferences);
+	}
+
+	@Override
+	public UserPreferences getPreferences(String userId) {
+		return queryTable(userId, null);
+	}
+
+	@Override
+	public <T> T getPreferencesForDefaultNamespace(String userId, TypeReference<T> type) {
+		return getPreferencesByNamespace(userId, defaultNamespace, type);
+	}
+
+	@Override
+	public <T> T getPreferencesByNamespace(String userId, String namespace, TypeReference<T> type){
+		if(userId == null){
+			throw new IllegalArgumentException("Could not retrieve preferences for null userId");
+		}
+		if(namespace == null){
+			throw new IllegalArgumentException("Could not retrieve preferences for null namespace");
+		}
+		StringBuilder namespaceFilter = new StringBuilder("preferences.");
+		namespaceFilter.append(namespace);
+		UserPreferences userPreferences = queryTable(userId, namespaceFilter.toString());
+		if(userPreferences == null || userPreferences.getPreferences() == null){
+			return null;
+		}
+		T output = objectMapper.convertValue(userPreferences.getPreferences().get(namespace), type);
+		return output;
+	}
+
+	public UserPreferences queryTable(String userId,String filterExpression){
+		Item item = table.getItem("userId", userId, filterExpression,null);
+		if(item == null){
+			return createUserRecord(userId);
+		}
+		LOG.debug(item.toJSONPretty().toString());
+
+		try {
+			return objectMapper.readValue(item.toJSON(), new TypeReference<UserPreferences>(){});
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
+			return null;
+		}
+	}
+
+	public UserPreferences createUserRecord(String userId){
+		ValueMap vm = new ValueMap().withMap(":val1", new HashMap<String,Object>());
+		UpdateItemSpec spec = new UpdateItemSpec().withPrimaryKey("userId", userId).withUpdateExpression("set preferences = :val1").withValueMap(vm).withReturnValues(ReturnValue.ALL_NEW);
+		UpdateItemOutcome outcome = table.updateItem(spec);
+		try {
+			return objectMapper.readValue(outcome.getItem().toJSON(), new TypeReference<UserPreferences>(){});
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
+			return null;
+		}
+	}
+
+	public String getDefaultServiceName() {
+		return defaultNamespace;
+	}
+
+	public void setNamespace(String defaultServiceName) {
+		this.defaultNamespace = defaultServiceName;
+	}
 }
