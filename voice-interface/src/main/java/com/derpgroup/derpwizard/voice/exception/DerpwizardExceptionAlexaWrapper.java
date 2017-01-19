@@ -2,6 +2,7 @@ package com.derpgroup.derpwizard.voice.exception;
 
 import java.util.Map;
 
+import com._3po_labs.derpwizard.core.exception.DerpwizardException;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.SimpleCard;

@@ -10,10 +10,10 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import com._3po_labs.derpwizard.core.exception.DerpwizardException;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.derpgroup.derpwizard.voice.alexa.AlexaUtils;
-import com.derpgroup.derpwizard.voice.exception.DerpwizardException;
 import com.derpgroup.derpwizard.voice.model.CommonMetadata;
 import com.derpgroup.derpwizard.voice.model.ConversationHistoryEntry;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -33,8 +33,8 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com._3po_labs.derpwizard.core.configuration.MainConfig;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import com.derpgroup.derpwizard.configuration.MainConfig;
 import com.derpgroup.derpwizard.health.BasicHealthCheck;
 import com.derpgroup.derpwizard.resource.AlexaResource;
 import com.derpgroup.derpwizard.resource.HomeResource;

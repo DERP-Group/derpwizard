@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #1. Set variables
-project_name="AstroBot"
-lowercase_name="astrobot"
+project_name="PokeBot"
+lowercase_name="pokebot"
 derpwizard_directory=$(pwd)
 
 #2. Make new dir and copy derpwizard into it
@@ -20,6 +20,8 @@ cd $project_name
 #3. remove things that shouldn't be cloned
 rm -rf .git
 rm -rf voice-interface
+rm -rf core
+rm -rf persistence
 rm -rf ./service/target
 
 #4. Rename files
